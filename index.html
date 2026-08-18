@@ -311,46 +311,46 @@ const PHASECAP={
 
 /* ============ state ============ */
 const ASSESS=[
- {cards:["A♦","J♣"],hero:"CO",scenario:"6:25pm, first drinks poured. A♦J♣ in the cutoff — folded to you.",
-  options:[{t:"Limp — see a cheap flop with a pretty hand",k:"fish",q:"🐟 The fish special: pretty hand, timid money."},
-   {t:"Raise to 2.5bb",k:"shark",q:"🦈 Clean. If it's worth playing, it's worth raising."},
-   {t:"Fold — too risky this early",k:"crab",q:"🦀 Overcautious — AJ from the cutoff is a standard raise."}]},
- {cards:["A♠","A♣"],hero:"UTG",scenario:"6:35pm. First hand you've been dealt: pocket aces, first to act.",
-  options:[{t:"Limp — trap the whole table",k:"fish",q:"🐟 Five callers later, someone's random two pair traps YOU."},
-   {t:"Raise 2.5bb — same as always",k:"shark",q:"🦈 Same size every hand. Nobody knows you have the nuts — that's the point."},
-   {t:"Raise huge — 10bb, protect them",k:"crab",q:"🦀 Everyone folds and your aces win pocket change."}]},
- {cards:["J♥","J♦"],hero:"CO",raiser:"UTG",scenario:"7:50pm. Greg from Finance has folded every hand for an hour. You raise jacks — Greg re-raises BIG.",
+ {cards:["A♦","J♣"],hero:"CO",scenario:"6:25pm, first drinks poured. You get an ace and a jack, one seat before the dealer button. Everyone before you has folded.",
+  options:[{t:"Just call the minimum — see a cheap flop",k:"fish",q:"🐟 The classic beginner move: pretty hand, timid money. Calling wins small and loses big."},
+   {t:"Raise — about 2½ times the big bet",k:"shark",q:"🦈 Clean. If a hand is worth playing, it's worth raising."},
+   {t:"Fold — too risky this early",k:"crab",q:"🦀 Overcautious — ace-jack in a late seat is a standard raise, even at 6:25pm."}]},
+ {cards:["A♠","A♣"],hero:"UTG",scenario:"6:35pm. First hand you've been dealt: two aces, and you're first to act.",
+  options:[{t:"Just call the minimum — trap the whole table",k:"fish",q:"🐟 Five callers later, someone's lucky two pair traps YOU."},
+   {t:"Raise — the same amount you'd raise anything",k:"shark",q:"🦈 Same raise size every time. Nobody knows you have the best hand — that's the point."},
+   {t:"Raise huge — scare them off",k:"crab",q:"🦀 Everyone folds and the best hand of the night wins pocket change."}]},
+ {cards:["J♥","J♦"],hero:"CO",raiser:"UTG",scenario:"7:50pm. Greg from Finance has folded every hand for an hour. You raise with two jacks — Greg suddenly raises you back, BIG.",
   options:[{t:"Call — jacks are too pretty to fold",k:"fish",q:"🐟 Pretty hands pay for other people's holidays. Greg has queens or better."},
-   {t:"Fold — Greg finally woke up with it",k:"shark",q:"🦈 Cold-blooded and correct. The nit's first raise means exactly what it says."},
-   {t:"All-in — pressure him back",k:"fish",q:"🐟 Straight into the shark's mouth. He snap-calls with kings."}]},
- {cards:["9♠","8♠"],hero:"BTN",raiser:"BB",board:["K♦","7♣","2♥"],scenario:"8:05pm. You raised, and Dana — who has called every single hand tonight — checks this flop to you. You have nothing.",
-  options:[{t:"Fire a big bluff — make her fold",k:"fish",q:"🐟 Dana has never folded. Dana will never fold."},
-   {t:"Check — she calls everything, save the chips",k:"shark",q:"🦈 Exactly. You can't bluff a calling station."},
-   {t:"Bet small 'for information'",k:"crab",q:"🦀 Information bets against stations are donations with a clipboard."}]},
- {cards:["K♠","J♦"],hero:"UTG",scenario:"6:40pm. First to act at a full table. Two picture cards sparkle at you.",
-  options:[{t:"Raise — paint cards!",k:"fish",q:"🐟 The classic. KJo from the first seat is dominated by everything that fights back."},
-   {t:"Fold",k:"shark",q:"🦈 Disciplined. Same cards two seats later is a raise — position first."},
-   {t:"Limp in quietly",k:"crab",q:"🦀 Half-committing to a hand you shouldn't play at all."}]},
- {cards:["A♣","Q♣"],hero:"HJ",scenario:"7:25pm. Two players limp in front of you. A♣Q♣ in the hijack.",
-  options:[{t:"Limp along — keep it friendly",k:"fish",q:"🐟 Friendly is how you split pots four ways with the best hand."},
-   {t:"Raise to ~5bb — punish the limpers",k:"shark",q:"🦈 Limpers announced weakness. Charge them for the flop they want."},
-   {t:"Fold — too many people in",k:"crab",q:"🦀 Folding AQs to two limps is leaving money on the felt."}]},
- {cards:["8♦","6♦"],hero:"BB",raiser:"BTN",scenario:"7:45pm. The button min-raises your big blind. 8♦6♦.",
-  options:[{t:"Re-raise — make a move",k:"fish",q:"🐟 A bluff into someone who just needs to call 2 more? That's a donation."},
-   {t:"Call — one more blind for three cards",k:"shark",q:"🦈 Right price, right hand. Suited and connected prints here."},
-   {t:"Fold — it's junk",k:"crab",q:"🦀 Too tight. You'd already paid half the entry fee."}]},
- {cards:["A♠","9♠"],hero:"CO",scenario:"8:45pm. Blinds are enormous, you're down to 13 big blinds. A♠9♠, folded to you.",
-  options:[{t:"Raise small — fold if someone shoves",k:"fish",q:"🐟 The forbidden move: pay a fifth of your stack, then surrender it."},
-   {t:"All-in",k:"shark",q:"🦈 Commit or fold — at 13bb your raise IS your stack."},
-   {t:"Fold and wait for aces",k:"crab",q:"🦀 The blinds will eat you long before aces arrive."}]},
- {cards:["K♣","9♣"],hero:"BTN",scenario:"9:00pm. You've built a big stack; the blinds each have ~8bb left and look nervous.",
-  options:[{t:"Fold K9 — be nice, they're short",k:"fish",q:"🐟 Nice finishes fourth. Their fear is your income."},
-   {t:"Raise small — make them sweat every orbit",k:"shark",q:"🦈 Relentless, cheap pressure. They must risk everything to fight back."},
-   {t:"All-in — crush them properly",k:"crab",q:"🦀 Overkill — risking your whole stack when a small raise does the same job."}]},
- {cards:["A♥","J♥"],hero:"CO",raiser:"BB",board:["A♠","8♦","6♣","3♠","2♥"],scenario:"River. Top pair against Dana the station. She checks to you one last time.",
-  options:[{t:"Check — what if she has it?",k:"fish",q:"🐟 Scared money. She check-calls with worse all day — you just refunded her."},
-   {t:"Bet — she calls with worse",k:"shark",q:"🦈 Thin value against a station: literally how casual tournaments are won."},
-   {t:"Shove all-in — maximum value",k:"crab",q:"🦀 Right idea, wrong dial. Size it so worse hands can still call."}]},
+   {t:"Fold — Greg finally has it",k:"shark",q:"🦈 Cold-blooded and correct. The tightest player's first raise means exactly what it says."},
+   {t:"Go all-in — pressure him back",k:"fish",q:"🐟 Straight into the shark's mouth. He instantly calls with kings."}]},
+ {cards:["9♠","8♠"],hero:"BTN",raiser:"BB",board:["K♦","7♣","2♥"],scenario:"8:05pm. You raised before the flop, and Dana — who has called every single hand tonight — checks to you. Your cards missed the board completely.",
+  options:[{t:"Bluff big — make her fold",k:"fish",q:"🐟 Dana has never folded. Dana will never fold."},
+   {t:"Check — she never folds, save your chips",k:"shark",q:"🦈 Exactly. You can't bluff someone who calls everything."},
+   {t:"Bet small 'to see where you stand'",k:"crab",q:"🦀 Small bets into someone who calls everything are donations with a clipboard."}]},
+ {cards:["K♠","J♦"],hero:"UTG",scenario:"6:40pm. First to act at a full table. A king and a jack sparkle at you.",
+  options:[{t:"Raise — two picture cards!",k:"fish",q:"🐟 The classic. King-jack from the first seat loses to everything that fights back."},
+   {t:"Fold",k:"shark",q:"🦈 Disciplined. The same cards two seats later would be a raise — the seat comes first."},
+   {t:"Just call the minimum",k:"crab",q:"🦀 Half-committing to a hand you shouldn't play at all."}]},
+ {cards:["A♣","Q♣"],hero:"HJ",scenario:"7:25pm. Two players just call the minimum in front of you. You have an ace and a queen, same suit.",
+  options:[{t:"Call along — keep it friendly",k:"fish",q:"🐟 Friendly is how you split pots four ways with the best hand."},
+   {t:"Raise big — charge the minimum-callers",k:"shark",q:"🦈 Calling the minimum announces weakness. Make them pay for the cheap flop they wanted."},
+   {t:"Fold — too many people in",k:"crab",q:"🦀 Folding this hand here is leaving money on the felt."}]},
+ {cards:["8♦","6♦"],hero:"BB",raiser:"BTN",scenario:"7:45pm. You're in the big blind. The dealer-button player raises the smallest amount allowed.",
+  options:[{t:"Raise back — make a move",k:"fish",q:"🐟 A bluff at someone who only needs to call a tiny bit more? That's a donation."},
+   {t:"Call — a cheap price to see three cards",k:"shark",q:"🦈 Right price, right hand. Two cards of the same suit that connect play great here."},
+   {t:"Fold — it's junk",k:"crab",q:"🦀 Too tight. You'd already paid half the price of entry."}]},
+ {cards:["A♠","9♠"],hero:"CO",scenario:"8:45pm. The forced bets are enormous now, and your stack is down to about 13 of them. Everyone folds to you.",
+  options:[{t:"Raise small — fold if someone goes all-in",k:"fish",q:"🐟 The forbidden move: pay a fifth of your stack, then surrender it."},
+   {t:"All-in",k:"shark",q:"🦈 Commit or fold — this short, your raise IS your whole stack. Two ways to win."},
+   {t:"Fold and wait for aces",k:"crab",q:"🦀 The forced bets will eat you long before aces arrive."}]},
+ {cards:["K♣","9♣"],hero:"BTN",scenario:"9:00pm. You have a mountain of chips; the two players after you are nearly out and look nervous.",
+  options:[{t:"Fold — be nice, they're almost out",k:"fish",q:"🐟 Nice finishes fourth. Their fear is your income."},
+   {t:"Raise small — make them sweat every hand",k:"shark",q:"🦈 Relentless, cheap pressure. They must risk everything just to fight back."},
+   {t:"All-in — crush them properly",k:"crab",q:"🦀 Overkill — risking your mountain when a small raise does the same job."}]},
+ {cards:["A♥","J♥"],hero:"CO",raiser:"BB",board:["A♠","8♦","6♣","3♠","2♥"],scenario:"Last card is out. You paired the highest card on the board, against Dana who calls everything. She checks one final time.",
+  options:[{t:"Check — what if she has better?",k:"fish",q:"🐟 Scared money. She calls with worse hands all day — you just refunded her."},
+   {t:"Bet — she'll call with worse",k:"shark",q:"🦈 Betting a good-but-not-perfect hand for value: literally how casual tournaments are won."},
+   {t:"All-in — maximum pressure",k:"crab",q:"🦀 Right idea, wrong dial. Size it so her worse hands can still call."}]},
 ];
 let S={screen:"home",name:"",aIdx:0,aPick:null,sharks:0,modIdx:0,qIdx:0,picked:null,sessionRight:0,help:false,gridPhase:"P1",scores:loadScores(),
  run:null,rIdx:0,rPicked:null,rRight:0,
@@ -561,6 +561,17 @@ const VIZ={
  },
 };
 const GLOSSARY=[
+ {k:["call"],t:"Call",d:"Match the current bet to stay in the hand.",basic:true},
+ {k:["raise"],t:"Raise",d:"Increase the bet — everyone else must match it or fold.",basic:true},
+ {k:["bet"],t:"Bet",d:"Put chips in when nobody has yet this round.",basic:true},
+ {k:["board"],t:"Board",d:"The shared face-up cards in the middle — everyone uses them.",basic:true},
+ {k:["minimum"],t:"The minimum",d:"Just matching the big blind instead of raising (players call this 'limping').",basic:true},
+ {k:["dealer button","button"],t:"Dealer button",d:"The disc marking the best seat — it acts last and moves one seat left every hand.",basic:true},
+ {k:["all-in"],t:"All-in",d:"Betting every chip you have.",basic:true},
+ {k:["big blind","forced bet"],t:"Big blind / forced bets",d:"Compulsory bets two players post before cards; they rise all night and drive the action.",basic:true},
+ {k:["fold"],t:"Fold",d:"Give up the hand and any chips you've already put in.",basic:true},
+ {k:["check"],t:"Check",d:"Pass without betting — only allowed when nobody has bet this round.",basic:true},
+ {k:["flop"],t:"Flop",d:"The first three shared cards, dealt together.",basic:true},
  {k:["limp"],t:"Limp",d:"Just calling the big blind instead of raising. Weak, avoid it."},
  {k:["big blind","bb.","bb,","bb "],t:"Big blind (bb)",d:"The forced bet posted before cards; also the unit for measuring stacks (a 30bb stack = 30 big blinds)."},
  {k:["small blind"],t:"Small blind",d:"The smaller forced bet, left of the button. Acts first after the flop."},
@@ -603,7 +614,7 @@ const REFRESH={
 };
 function helpHTML(h,chapId){
   const text=(h.scenario+" "+h.options.join(" ")).toLowerCase();
-  const terms=GLOSSARY.filter(g=>g.k.some(k=>text.includes(k))).slice(0,6);
+  const terms=GLOSSARY.filter(g=>!g.basic&&g.k.some(k=>text.includes(k))).slice(0,6);
   const ref=chapId?REFRESH[chapId]:null;
   const btn=`<button class="helpbtn ${S.help?"on":""}" onclick="toggleHelp()">🛈 ${S.help?"Hide the refresher":"Explain the terms — quick refresher"}</button>`;
   if(!S.help)return btn;
@@ -637,7 +648,7 @@ function introHTML(){
     <div class="label">Five V Poker Trainer Coach</div>
     <div class="verdict-emoji">🦈🐟</div>
     <h1 style="font-size:30px;margin:6px 0 8px;font-weight:700">Fish or Shark?</h1>
-    <p style="color:var(--dim);font-size:14px;margin:0 18px 4px;line-height:1.6">Ten quick moments from poker night. Answer honestly — in three minutes you'll know whether this guide is for you.</p>
+    <p style="color:var(--dim);font-size:14px;margin:0 18px 4px;line-height:1.6">Ten quick moments from poker night — where do you land on the Fish Spectrometer? New to poker? Every question has a "what do these words mean?" button. No experience needed.</p>
     <input class="nameinput" id="nameInput" maxlength="20" placeholder="What do we call you at the table?" autocomplete="off">
     <button class="btn gold center" onclick="submitName()">Deal me in →</button>
     <button class="btn center" onclick="skipIntro()">Skip — straight to the guide</button>
@@ -658,26 +669,45 @@ function assessHTML(){
   ${h.board?`<div class="board-lbl">BOARD</div><div class="board-strip" style="margin-bottom:10px">${h.board.map(xsCard).join("")}</div>`:""}
   <p class="scenario">${esc(h.scenario)}</p>
   ${opts}
+  ${assessHelpHTML(h)}
   ${answered?`<div class="quip ${h.options[S.aPick].k}">${esc(h.options[S.aPick].q)}</div>
-  <button class="btn gold center" onclick="assessNext()">${S.aIdx+1<ASSESS.length?"Next situation →":"Get my verdict"}</button>`:""}`;
+  <button class="btn gold center" onclick="assessNext()">${S.aIdx+1<ASSESS.length?"Next situation →":"Get my verdict"}</button>`:""}
+  <button class="back" style="display:block;margin:6px auto 0;opacity:.75" onclick="quitAssess()">🏳️ I've had enough — get me out</button>`;
+}
+function assessHelpHTML(h){
+  const text=(h.scenario+" "+h.options.map(o=>o.t).join(" ")).toLowerCase();
+  const terms=GLOSSARY.filter(g=>g.basic&&g.k.some(k=>text.includes(k))).slice(0,6);
+  const btn=`<button class="helpbtn ${S.help?"on":""}" onclick="toggleHelp()">🛈 ${S.help?"Hide":"What do these words mean?"}</button>`;
+  if(!S.help)return btn;
+  return btn+`<div class="helppanel">${terms.length?terms.map(t=>`<div class="hp-item"><b>${t.t}</b> — ${t.d}</div>`).join(""):`<div class="hp-item">No jargon in this one — pure instinct.</div>`}</div>`;
+}
+function quitAssess(){track("assessment-quit");S.screen="assessQuit";render();}
+function assessQuitHTML(){
+  return `<div class="center-wrap" style="margin-top:60px">
+    <div class="verdict-emoji">🦑</div>
+    <h2 style="font-size:28px;margin:8px 0 4px">The Squid</h2>
+    <p class="fine">Vanished in a cloud of ink before the verdict. No judgement — the guide holds no grudges, and the test will be here if you ever want a rematch.</p>
+    <button class="btn gold center" onclick="go('home')">Take me to the guide</button>
+    <button class="btn center" onclick="S.screen='assess';render()">Fine — back to the test</button>
+  </div>`;
 }
 function assessDoneHTML(){
   const n=S.sharks;
   const who=S.name?", "+esc(S.name):"";
-  let e,t,msg;
-  if(n>=9){e="🦈";t="Apex Shark";msg="Near-flawless"+who+". You might not even need this guide — prove it by winning Tournament Night without a single miss.";}
-  else if(n>=7){e="🦈";t="Shark with training wheels";msg="Strong instincts"+who+" — but the "+(10-n)+" fishy answer"+(10-n>1?"s":"")+" will cost you real chips on the night. The chapters will sand those off fast.";}
-  else if(n>=4){e="🐟";t="Fish with ambition";msg="Good news"+who+": this guide was built precisely for you. Three chapters from now, you're the one doing the eating.";}
-  else{e="🐟";t="Chum";msg="Beautiful, delicious chum"+who+". The whole table smells it. Read Chapter 1 before someone eats your buy-in — the glow-up will be spectacular.";}
+  const tier=n>=9?{e:"🦈",t:"Apex Shark",key:"apex-shark",msg:"Near-flawless"+who+". The table should fear you — prove it by winning Tournament Night without a miss."}
+    :n>=7?{e:"🐬",t:"Dolphin",key:"dolphin",msg:"Smart, fast, occasionally showing off"+who+". The "+(10-n)+" slips would cost real chips — one pass through the guide and you grow fins."}
+    :n>=4?{e:"🐠",t:"Goldfish",key:"goldfish",msg:"Good instincts, three-second memory for the rules"+who+". This guide was built precisely for you — three chapters and you're doing the eating."}
+    :{e:"🦐",t:"Prawn",key:"prawn",msg:"Delicious"+who+". On the barbie by 7pm unless you read Chapter 1 — but the glow-up from here is spectacular."};
+  const spectro=["🦐","🐠","🐬","🦈"].map(x=>`<span style="font-size:${x===tier.e?"38px":"22px"};opacity:${x===tier.e?1:.35}">${x}</span>`).join('<span style="opacity:.3;font-size:16px;padding:0 2px">·</span>');
   return `<div class="center-wrap" style="margin-top:36px">
-    <div class="label">The verdict</div>
-    <div class="verdict-emoji">${e}</div>
-    <h2 style="font-size:30px;margin:6px 0 2px">${t}</h2>
-    <div class="sharkmeter">${"🦈".repeat(n)}${"🐟".repeat(10-n)}</div>
+    <div class="label">The Fish Spectrometer</div>
+    <div class="verdict-emoji">${tier.e}</div>
+    <h2 style="font-size:30px;margin:6px 0 2px">${tier.t}</h2>
+    <div class="sharkmeter" style="align-items:center">${spectro}</div>
     <div style="font-size:14px;color:var(--brass);font-weight:700;margin-bottom:8px">${n}/${ASSESS.length} shark answers</div>
-    <p class="fine">${msg}</p>
+    <p class="fine">${tier.msg}</p>
     ${n>=7?`<button class="btn gold center" onclick="startSim()">🏆 Prove it — play Tournament Night</button><button class="btn center" onclick="openModule(0)">Start at Chapter 1 anyway</button>`
-    :`<button class="btn gold center" onclick="openModule(0)">Start Chapter 1 — become the shark</button><button class="btn center" onclick="startAssess()">Retake the test</button>`}
+    :`<button class="btn gold center" onclick="openModule(0)">Start Chapter 1 — climb the spectrometer</button><button class="btn center" onclick="startAssess()">Retake the test</button>`}
     <button class="btn center" onclick="go('home')">See everything</button>
   </div>`;
 }
@@ -691,14 +721,17 @@ function skipIntro(){saveProfile({name:S.name,skipped:true});go("home");}
 function startAssess(){track("assessment-started");S.aIdx=0;S.aPick=null;S.sharks=0;S.screen="assess";render();}
 function assessPick(i){
   if(S.aPick!==null)return;
+  S.help=false;
   S.aPick=i;
   if(ASSESS[S.aIdx].options[i].k==="shark")S.sharks++;
   render();
 }
 function assessNext(){
-  if(S.aIdx+1<ASSESS.length){S.aIdx++;S.aPick=null;render();}
+  if(S.aIdx+1<ASSESS.length){S.aIdx++;S.aPick=null;S.help=false;render();}
   else{
-    const pr=loadProfile();pr.name=S.name;pr.skipped=true;pr.sharks=S.sharks;pr.verdict=S.sharks>=7?"🦈":"🐟";saveProfile(pr);track("assessment-completed");track(S.sharks>=7?"verdict-shark":"verdict-fish");
+    const n=S.sharks;const tk=n>=9?"apex-shark":n>=7?"dolphin":n>=4?"goldfish":"prawn";const te=n>=9?"🦈":n>=7?"🐬":n>=4?"🐠":"🦐";
+    const pr=loadProfile();pr.name=S.name;pr.skipped=true;pr.sharks=n;pr.verdict=te;saveProfile(pr);
+    track("assessment-completed");track("tier-"+tk);
     S.screen="assessDone";render();
   }
 }
@@ -708,6 +741,7 @@ function render(){
   if(S.screen==="intro")html=introHTML();
   else if(S.screen==="assess")html=assessHTML();
   else if(S.screen==="assessDone")html=assessDoneHTML();
+  else if(S.screen==="assessQuit")html=assessQuitHTML();
   else if(S.screen==="home")html=homeHTML();
   else if(S.screen==="lesson")html=lessonHTML();
   else if(S.screen==="quiz")html=quizHTML();
