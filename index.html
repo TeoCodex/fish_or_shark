@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Five V Poker Trainer Coach</title>
+<style>
+  :root{
+    --felt:#0C3B2E; --felt-mid:#11503E; --cream:#F6F1E3; --brass:#C9A227;
+    --red:#C34036; --ink:#17211C; --dim:#D9D2BE;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    background:radial-gradient(ellipse at 50% -10%, var(--felt-mid) 0%, var(--felt) 55%, #082A20 100%);
+    background-attachment:fixed;
+    color:var(--cream);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+    min-height:100vh;
+  }
+  #app{max-width:480px;margin:0 auto;padding:20px 16px 44px;min-height:100vh}
+  h1,h2,.big-num{font-family:Georgia,"Times New Roman",serif}
+  .label{font-size:11px;letter-spacing:3px;color:var(--brass);text-transform:uppercase;font-weight:700}
+  .btn{display:block;width:100%;text-align:left;background:rgba(246,241,227,.07);color:var(--cream);
+    border:1px solid rgba(246,241,227,.18);border-radius:10px;padding:13px 15px;font-size:15px;
+    font-weight:600;margin-bottom:10px;cursor:pointer;font-family:inherit;line-height:1.35}
+  .btn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  .btn.gold{background:var(--brass);color:var(--ink);border-color:var(--brass)}
+  .btn.center{text-align:center}
+  .btn .row{display:flex;justify-content:space-between;align-items:center}
+  .btn .sub{font-size:12.5px;color:var(--dim);font-weight:400;margin-top:3px}
+  .btn.gold .sub{color:var(--ink)}
+  .btn .score{color:var(--brass);font-size:13px;font-weight:700}
+  .btn.gold .score{color:var(--ink)}
+  .btn:disabled{cursor:default}
+  .btn.opt-right{background:rgba(201,162,39,.25);border-color:var(--brass)}
+  .btn.opt-wrong{background:rgba(195,64,54,.3);border-color:var(--red)}
+  .btn.opt-mute{color:rgba(246,241,227,.4)}
+  .back{background:none;border:none;color:var(--brass);font-size:13px;cursor:pointer;padding:0;
+    font-weight:700;font-family:inherit;margin-bottom:14px}
+  .lesson-p{font-size:14.5px;line-height:1.65;color:var(--dim);margin-bottom:12px}
+  .lesson-p.lead{color:var(--cream)}
+  .cards-row{display:flex;justify-content:center;gap:10px;margin:8px 0 12px}
+  .pcard{width:62px;height:88px;background:var(--cream);border-radius:8px;flex-shrink:0;
+    box-shadow:0 3px 8px rgba(0,0,0,.45), inset 0 0 0 1px rgba(23,33,28,.15);
+    display:flex;flex-direction:column;justify-content:space-between;padding:6px 8px;
+    font-family:Georgia,serif;user-select:none}
+  .pcard.sm{width:40px;height:56px;padding:4px 5px}
+  .pcard .tl{font-size:21px;font-weight:700;line-height:1}
+  .pcard.sm .tl{font-size:15px}
+  .pcard .tl span{display:block;font-size:17px}
+  .pcard.sm .tl span{font-size:12px}
+  .pcard .br{font-size:26px;text-align:right;line-height:1}
+  .pcard.sm .br{font-size:16px}
+  .red{color:var(--red)} .blk{color:var(--ink)}
+  .scenario{font-size:14.5px;line-height:1.55;text-align:center;margin:0 4px 15px;color:var(--cream)}
+  .feedback{background:rgba(0,0,0,.28);border-left:3px solid var(--brass);border-radius:8px;
+    padding:12px 14px;margin:6px 0 14px}
+  .feedback.wrong{border-left-color:var(--red)}
+  .feedback .verdict{font-size:12px;font-weight:800;letter-spacing:2px;color:var(--brass);margin-bottom:5px}
+  .feedback.wrong .verdict{color:var(--red)}
+  .feedback .expl{font-size:13.5px;line-height:1.6;color:var(--dim)}
+  .rulebox{background:rgba(201,162,39,.12);border:1px solid rgba(201,162,39,.45);border-radius:8px;
+    padding:9px 12px;margin-top:8px;font-size:13px;font-weight:700;color:var(--brass);line-height:1.45}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;
+    font-size:12px;color:var(--dim)}
+  .simbar{display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);
+    border-radius:8px;padding:8px 13px;margin-bottom:6px}
+  .simbar .lvl{font-size:11.5px;color:var(--brass);font-weight:700;letter-spacing:1px}
+  .simbar .stk{font-size:14px;font-weight:800}
+  .simbar .stk.danger{color:var(--red)}
+  .grid13{display:grid;grid-template-columns:repeat(13,1fr);gap:1.5px;margin-top:2px}
+  .cell{aspect-ratio:1;border-radius:3px;background:rgba(246,241,227,.06);color:rgba(246,241,227,.35);
+    font-size:7.5px;font-weight:700;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .cell.in-s{background:rgba(201,162,39,.75);color:var(--ink)}
+  .cell.in-o{background:rgba(201,162,39,.5);color:var(--ink)}
+  .cell.in-p{background:var(--brass);color:var(--ink)}
+  .gridfoot{display:flex;justify-content:space-between;margin-top:8px;font-size:11.5px;color:var(--dim)}
+  .toggle-row{display:flex;gap:8px;margin:6px 0 10px}
+  .toggle-row button{flex:1;padding:9px 0;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;
+    background:rgba(246,241,227,.07);color:var(--cream);border:1px solid rgba(246,241,227,.18);font-family:inherit}
+  .toggle-row button.on{background:var(--brass);color:var(--ink);border-color:var(--brass)}
+  .pcard.xs{width:27px;height:38px;padding:2px 3px;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.4), inset 0 0 0 1px rgba(23,33,28,.12)}
+  .pcard.xs .tl{font-size:10px}
+  .pcard.xs .tl span{font-size:9px}
+  .pcard.xs .br{display:none}
+  .ladder{margin:6px 0 18px}
+  .ladder-row{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;margin-bottom:5px;background:rgba(0,0,0,.22)}
+  .ladder-row.hot{background:rgba(201,162,39,.14);border:1px solid rgba(201,162,39,.4)}
+  .ladder-num{width:20px;flex-shrink:0;text-align:center;font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--brass)}
+  .ladder-info{flex:1;min-width:0}
+  .ladder-name{font-size:13px;font-weight:700}
+  .ladder-note{font-size:11px;color:var(--dim);line-height:1.3}
+  .ladder-cards{display:flex;gap:2.5px;flex-shrink:0}
+  .nightmap{margin:14px 0 20px;position:relative;padding-left:18px}
+  .nightmap::before{content:"";position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:rgba(201,162,39,.35);border-radius:2px}
+  .nm-row{position:relative;padding:0 0 14px 8px}
+  .nm-row::before{content:"";position:absolute;left:-17px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--brass);box-shadow:0 0 0 3px rgba(201,162,39,.2)}
+  .nm-row.warn::before{background:var(--red);box-shadow:0 0 0 3px rgba(195,64,54,.25)}
+  .nm-time{font-size:12px;font-weight:800;color:var(--brass);letter-spacing:1px}
+  .nm-row.warn .nm-time{color:var(--red)}
+  .nm-title{font-size:13.5px;font-weight:700;margin-top:1px}
+  .nm-sub{font-size:12px;color:var(--dim);line-height:1.45;margin-top:1px}
+  .nm-chip{display:inline-block;background:rgba(201,162,39,.16);border:1px solid rgba(201,162,39,.4);color:var(--brass);border-radius:5px;font-size:10.5px;font-weight:700;padding:1px 6px;margin-left:5px;vertical-align:1px}
+    .vizbox{background:rgba(0,0,0,.22);border-radius:10px;padding:12px 8px 10px;margin:4px 0 16px}
+  .viz-title{font-size:10.5px;letter-spacing:2px;color:var(--brass);text-transform:uppercase;font-weight:700;text-align:center;margin-bottom:10px}
+  .viz-cap{font-size:11.5px;color:var(--dim);text-align:center;margin-top:9px;line-height:1.45;padding:0 6px}
+  .chiprow{display:flex;flex-wrap:wrap;gap:12px 14px;justify-content:center}
+  .handchip{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .hc-cards{display:flex;gap:2px}
+  .hc-tag{font-size:8.5px;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:4px}
+  .t-raise{background:var(--brass);color:var(--ink)}
+  .t-fold{background:rgba(246,241,227,.14);color:var(--dim)}
+  .t-shove{background:var(--red);color:var(--cream)}
+  .t-defend{background:#1A6A52;color:var(--cream)}
+  .duel{display:flex;justify-content:center;gap:26px;align-items:flex-start;margin-bottom:8px}
+  .duel-hand{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .duel-who{font-size:10px;font-weight:800;letter-spacing:1px}
+  .board-strip{display:flex;gap:3px;justify-content:center;margin-top:2px}
+  .board-lbl{font-size:9.5px;letter-spacing:2px;color:var(--dim);text-align:center;margin-bottom:4px}
+  .streets{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+  .st-group{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .st-cards{display:flex;gap:2px}
+  .st-lbl{font-size:8.5px;letter-spacing:1px;font-weight:800;color:var(--dim)}
+  .st-arrow{color:var(--brass);font-size:15px;font-weight:700;padding-bottom:14px}
+  .phasebars{display:flex;align-items:flex-end;gap:16px;justify-content:center;height:120px;padding-top:4px}
+  .pb-col{display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+  .pb-bar{width:62px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#E3BC3F,var(--brass));box-shadow:inset 0 -3px 8px rgba(0,0,0,.25)}
+  .pb-bb{font-size:12px;font-weight:800;color:var(--brass)}
+  .pb-lbl{font-size:9.5px;color:var(--dim);text-align:center;line-height:1.3}
+  .tb-wrap{display:flex;gap:12px;justify-content:center;margin:4px 0 2px}
+  .tb{padding:15px 24px;border-radius:12px;font-weight:800;font-size:15px;letter-spacing:1.5px}
+  .tb.allin{background:var(--brass);color:var(--ink);box-shadow:0 3px 10px rgba(201,162,39,.35)}
+  .tb.fold{background:rgba(246,241,227,.1);color:var(--cream);border:1px solid rgba(246,241,227,.25)}
+  .tb-no{text-align:center;margin-top:10px;font-size:13px;color:var(--red);font-weight:700}
+  .tb-no s{opacity:.85}
+  .ptypes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .ptype{background:rgba(0,0,0,.25);border:1px solid rgba(246,241,227,.15);border-radius:10px;padding:10px 11px}
+  .ptype.hot{border-color:rgba(201,162,39,.55);background:rgba(201,162,39,.1)}
+  .pt-icon{font-size:20px;line-height:1}
+  .pt-name{font-size:13px;font-weight:800;margin:4px 0 2px}
+  .pt-tell{font-size:11px;color:var(--dim);line-height:1.4}
+  .pt-beat{font-size:11px;color:var(--brass);font-weight:700;margin-top:6px;line-height:1.35}
+  .infosplit{display:flex;flex-direction:column;gap:10px}
+  .info-half{display:flex;align-items:center;gap:12px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 10px}
+  .info-half.good{border:1px solid rgba(201,162,39,.4)}
+  .ih-cards{display:flex;gap:2px;flex-shrink:0}
+  .ih-txt{font-size:11.5px;line-height:1.45;color:var(--dim)}
+  .ih-txt b{color:var(--cream);font-size:12px}
+  .info-half.good .ih-txt b{color:var(--brass)}
+  .helpbtn{display:block;width:100%;text-align:center;background:transparent;color:var(--dim);border:1.5px dashed rgba(246,241,227,.3);border-radius:10px;padding:9px;font-size:12.5px;font-weight:600;margin:2px 0 10px;cursor:pointer;font-family:inherit}
+  .helpbtn.on{color:var(--brass);border-color:rgba(201,162,39,.5)}
+  .helppanel{background:rgba(0,0,0,.3);border:1px solid rgba(201,162,39,.3);border-radius:10px;padding:11px 13px;margin:-4px 0 12px}
+  .hp-ref{font-size:12.5px;color:var(--brass);line-height:1.5;margin-bottom:8px;font-weight:600}
+  .hp-item{font-size:12px;color:var(--dim);line-height:1.5;margin-bottom:5px}
+  .hp-item b{color:var(--cream)}
+  .nameinput{display:block;width:100%;background:rgba(0,0,0,.35);border:1px solid rgba(201,162,39,.45);border-radius:10px;padding:13px 15px;font-size:16px;color:var(--cream);font-family:inherit;text-align:center;margin:14px 0 12px;outline:none}
+  .nameinput::placeholder{color:rgba(246,241,227,.35)}
+  .quip{border-radius:10px;padding:12px 14px;margin:4px 0 12px;font-size:13.5px;line-height:1.55;font-weight:600}
+  .quip.shark{background:rgba(201,162,39,.16);border:1px solid rgba(201,162,39,.5);color:var(--brass)}
+  .quip.fish{background:rgba(195,64,54,.16);border:1px solid rgba(195,64,54,.5);color:#E8907F}
+  .quip.crab{background:rgba(246,241,227,.08);border:1px solid rgba(246,241,227,.3);color:var(--dim)}
+  .verdict-emoji{font-size:64px;margin:10px 0 0}
+  .sharkmeter{display:flex;gap:3px;justify-content:center;margin:12px 0 4px;font-size:17px;flex-wrap:wrap}
+  .assess-tag{display:inline-block;background:rgba(201,162,39,.16);border:1px solid rgba(201,162,39,.4);color:var(--brass);border-radius:6px;font-size:11px;font-weight:800;letter-spacing:1px;padding:2px 8px;margin-bottom:8px}
+  .center-wrap{text-align:center;margin-top:50px}
+  .big-num{font-size:64px;font-weight:700;color:var(--brass);margin:16px 0 4px}
+  .fine{color:var(--dim);font-size:14px;margin:6px 28px 30px;line-height:1.55}
+  @media (prefers-reduced-motion:no-preference){
+    .screen{animation:fade .18s ease}
+    @keyframes fade{from{opacity:.4}to{opacity:1}}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+/* ============ persistence (safe in sandboxed previews) ============ */
+function loadScores(){ try{ return JSON.parse(localStorage.getItem("preflopScores")||"{}"); }catch(e){ return {}; } }
+function saveScores(s){ try{ localStorage.setItem("preflopScores", JSON.stringify(s)); }catch(e){} }
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem("pfProfile")||"{}"); }catch(e){ return {}; } }
+function saveProfile(p){ try{ localStorage.setItem("pfProfile", JSON.stringify(p)); }catch(e){} }
+
+/* ============ content ============ */
+const CHAPTERS=[
+{id:"cards",title:"Ch 1 · Card strength & ranges",tagline:"What beats what — and what you play",
+ lesson:[
+  "Weak to strong: high card → pair → two pair → trips → straight → flush → full house → quads → straight flush. The one trap: flush beats straight.",
+  {viz:"ladder"},
+  "Same pair on both sides? The side card — the kicker — decides it.",
+  {viz:"kicker"},
+  "A hand in ten seconds: two hidden cards each, five shared cards arriving in stages, betting after each stage. Your best five cards win.",
+  {viz:"streets"},
+  "The big idea: you don't play a hand, you play a RANGE — a fixed list of hands you always play from a seat. AKs = suited (same suit, makes flushes, plays earlier), AKo = offsuit. Gold = play, dark = fold. Toggle the seat and the phase of the night:",
+ ],
+ grid:true,
+ hands:[
+  {cards:["A♥","K♥"],hero:"BTN",board:["9♠","9♦","2♣","5♥","J♦"],opp:["3♠","3♣"],scenario:"Showdown. Your ace-king never paired; they turn over a pair of threes. Who wins?",options:["You — ace-king is strong","Opponent — a pair beats high card","Split pot"],correct:1,explain:"Big cards that miss the board make nothing. Their threes win.",rule:"Any pair beats any high card."},
+  {cards:["K♠","Q♠"],hero:"CO",board:["T♠","7♠","3♠","2♦","9♥"],opp:["9♣","9♦"],scenario:"You made a flush; they made three nines. Who wins?",options:["Your flush","Their three of a kind"],correct:0,explain:"Flush beats trips and beats a straight. Only a full house or better overtakes it.",rule:"Flush > straight > trips."},
+  {cards:["A♠","K♦"],hero:"BTN",board:["A♥","8♠","5♦","2♣","3♥"],opp:["A♦","Q♣"],scenario:"Both of you paired the ace. Who wins?",options:["Split — same pair","You — king kicker"],correct:1,explain:"Same pair goes to the kicker: K beats Q.",rule:"Tied pairs are decided by the kicker."},
+  {cards:["J♥","T♥"],hero:"BB",scenario:"Everyone folds to the SB, who just calls. Nobody has raised. What's free?",options:["Check and see the flop","You must bet","You must fold"],correct:0,explain:"No raise in front means checking costs nothing — three free cards.",rule:"Never fold when you can check."},
+  {cards:["A♥","8♥"],hero:"UTG",scenario:"First to act with A♥8♥.",options:["Raise","Fold"],correct:1,explain:"A9s makes the first-seat range; A8s sits just below the line. Close counts for nothing.",rule:"Just below the range line = fold."},
+ ]},
+{id:"position",title:"Ch 2 · Position & betting tactics",tagline:"Where you sit, when you act, how you attack",
+ lesson:[
+  "Your seat decides when you act — and acting later means knowing more.",
+  {viz:"orderRings"},
+  "The order flips after the flop: blinds first, button last, every street. That's why the button is the best seat in poker.",
+  {viz:"zonesRing"},
+  "Acting last turns guesses into decisions:",
+  {viz:"lastToAct"},
+  "The playbook: fold most hands, raise the ones you play. Never limp. When unsure, fold.",
+  {viz:"tight"},
+  "Sizing: open ~2.5x the big blind (add 1bb per limper), same size every time. Re-raise ~3x the open in position, ~4x out of position.",
+  {viz:"openStrips"},
+  "The steal: folded to you in the cutoff, button, or small blind? Raise ~2.2x with anything decent — every single orbit. Someone limps? Raise to ~4bb and take it on the flop when they miss.",
+  {viz:"stealSeats"},
+  {viz:"stealStrip"},
+  "In the big blind against a small raise, call with hands that work together — suited, connected, paired, or an ace. Fold disconnected junk.",
+  {viz:"bbStrip"},
+ ],
+ hands:[
+  {cards:["7♥","6♥"],hero:"SB",scenario:"Flop just dealt; you (SB), MP, and the button remain. Who acts first?",options:["You — the small blind","MP","The button"],correct:0,explain:"Postflop the blinds speak first, the button last.",rule:"Postflop: blinds first, button last. Every street."},
+  {cards:["Q♠","T♠"],hero:"MP",scenario:"Q♠T♠ in MP, folded to you. Five players behind.",options:["Raise","Fold"],correct:1,explain:"Too many unknown hands behind. Two seats later it's a raise.",rule:"Red zone: premium hands only."},
+  {cards:["Q♠","T♠"],hero:"BTN",scenario:"Same Q♠T♠, now on the button.",options:["Raise","Fold"],correct:0,explain:"Only the blinds behind, and you act last all hand.",rule:"Gold zone: open wide — the seat did the work."},
+  {cards:["T♦","9♦"],hero:"BTN",board:["K♣","6♥","2♠"],scenario:"You raised, the BB called, the flop misses you — and they check.",options:["Bet small — their check showed weakness","Check — you missed","Fold"],correct:0,explain:"Position converted into money: they showed weakness first, your small bet takes it.",rule:"Checked to in position? A small bet wins shockingly often."},
+  {cards:["K♦","7♦"],hero:"BTN",scenario:"Phase two, 50bb, folded to you on the button.",options:["Raise — steal","Fold — weak hand"],correct:0,explain:"Two players left, both likely folding, suited king in hand. Instant profit.",rule:"Late position, unopened pot: raise. Every orbit."},
+  {cards:["8♦","6♦"],hero:"BB",raiser:"BTN",scenario:"Button min-raises. You're in the BB with 8♦6♦.",options:["Call — great price","Fold — junk"],correct:0,explain:"One more blind to see three cards with a suited connector.",rule:"BB vs small raise: defend suited, connected, paired."},
+ ]},
+{id:"strategy",title:"Ch 3 · Player types & tournament strategy",tagline:"Read the room, ride the phases",
+ lesson:[
+  "This is a casual work event — most of the table is loose by design. Spot the two or three who aren't, and adjust.",
+  {viz:"ptypes"},
+  "The headline: you cannot bluff a calling station. Value bet them instead — even thin, bigger than feels polite. That's how casual tournaments are won.",
+  "Nits: steal their blinds, believe their raises. Maniacs: call lighter, re-raise your strong hands. And watch your LEFT — that player acts after you all night.",
+  {viz:"typeLeft"},
+  "The night has three phases. Three plans:",
+  {viz:"phases"},
+  "PHASE 1 (~300bb): don't go broke without a big hand — deep, one pair is rarely worth your stack. Cooler? One 10k top-up at the 7:00 break.",
+  "PHASE 2 (~60bb, falling): steal every orbit. This is where the tournament is won.",
+  "PHASE 3 (under 20bb): tighter hands, harder commitment. Never raise-then-fold — under ~12bb your raise IS all-in.",
+  {viz:"twoButtons"},
+  {viz:"shoveStrip"},
+  {viz:"gridP3"},
+  "No prize ladder means no reason to blind away. Commit your spots and win the trophy.",
+ ],
+ hands:[
+  {cards:["9♠","8♠"],hero:"BTN",raiser:"BB",board:["K♦","7♣","2♥"],scenario:"You raised, the office calling station called. The flop misses you and they check.",options:["Bluff big — make them fold","Check — they never fold anyway"],correct:1,explain:"A bluff only works if they can fold. Stations can't.",rule:"You cannot bluff a calling station. Ever."},
+  {cards:["A♥","J♥"],hero:"CO",raiser:"BB",board:["A♠","8♦","6♣","3♠","2♥"],scenario:"River. Top pair against the same station. They check.",options:["Bet — they call with worse all day","Check back — only bet monsters"],correct:0,explain:"Thin value is exactly how you beat stations.",rule:"Vs stations: value bet relentlessly, even thin."},
+  {cards:["J♦","J♣"],hero:"CO",raiser:"UTG",scenario:"The nit — one hand all night — re-raises you big. You have jacks.",options:["All-in","Call","Fold"],correct:2,explain:"A nit's big raise is QQ+/AK. Jacks are crushed. Folding here feels awful and is completely right.",rule:"When the nit finally raises — believe and fold."},
+  {cards:["A♦","Q♦"],hero:"BTN",raiser:"HJ",scenario:"The maniac raises for the fifth time this orbit. A♦Q♦ on the button.",options:["Re-raise — punish","Call quietly","Fold"],correct:0,explain:"Against that wide a range, AQs is miles ahead. Let them hang themselves.",rule:"Maniacs pay off strong hands. Re-raise for value."},
+  {cards:["A♠","9♠"],hero:"CO",scenario:"Phase three: 13bb, folded to you.",options:["Raise small, fold to a shove","All-in","Fold"],correct:1,explain:"The small raise commits a fifth of your stack then surrenders it. Worth playing = worth everything.",rule:"Never raise-then-fold under 15bb. Commit or fold."},
+  {cards:["K♣","9♣"],hero:"BTN",scenario:"You've built 45bb; the blinds have 12bb and 9bb. Folded to you.",options:["Raise small — pressure","Fold — K9 is marginal","All-in"],correct:0,explain:"Raise small, make THEM risk everything to fight back. Cheap, relentless.",rule:"Big stack: raise small and often into short blinds."},
+ ]}
+];
+
+const RUN_A={id:"runA",title:"Run A · Rules check",desc:"Six easy hands. Warm up.",hands:[
+ {cards:["7♠","2♦"],hero:"UTG",scenario:"First to act with the worst hand in poker.",options:["Raise","Fold"],correct:1,explain:"Easiest fold you'll ever make.",rule:"When unsure, fold."},
+ {cards:["A♠","A♦"],hero:"BTN",scenario:"Folded to you on the button with aces.",options:["Limp to trap","Raise","Fold (joking)"],correct:1,explain:"Raise your normal size. Limping traps nobody.",rule:"Raise or fold — even with aces, especially with aces."},
+ {cards:["Q♣","7♦"],hero:"CO",scenario:"Folded to you with Q♣7♦ in phase one.",options:["Raise","Fold"],correct:1,explain:"Junk from every seat except a desperate shove.",rule:"Tight is right — fold the junk."},
+ {cards:["A♣","K♠"],hero:"UTG",scenario:"First to act with A♣K♠.",options:["Raise 2.5bb","Limp","Fold"],correct:0,explain:"Premium hand, standard raise, any seat.",rule:"Premium hands raise from everywhere."},
+ {cards:["7♥","6♥"],hero:"BTN",scenario:"Folded to you on the button with 7♥6♥.",options:["Raise","Limp","Fold"],correct:0,explain:"Suited connector, best seat, two likely folds ahead.",rule:"Position beats cards — the button plays wide."},
+ {cards:["J♣","J♦"],hero:"HJ",raiser:"UTG",scenario:"A loose player who plays half his hands raises. You have jacks.",options:["Re-raise","Fold"],correct:0,explain:"Against a wide range, jacks are way ahead. Punish.",rule:"Aggression wins — big hand, big raise."}]};
+
+const RUN_B={id:"runB",title:"Run B · Which phase is it?",desc:"Mixed stacks and reads. Recognise the phase — and the player.",hands:[
+ {cards:["A♣","7♦"],hero:"CO",scenario:"9bb, phase three. Folded to you.",options:["All-in","Raise small","Fold"],correct:0,explain:"Short stack + any ace = jam.",rule:"Phase three, under 10bb: jam or fold only."},
+ {cards:["K♥","Q♥"],hero:"BTN",raiser:"UTG",scenario:"Phase one, deep. You 3-bet KQs; UTG 4-bets big.",options:["All-in","Call","Fold"],correct:2,explain:"Big action deep = they have it.",rule:"Deep: don't go broke without a premium."},
+ {cards:["A♠","9♠"],hero:"CO",scenario:"13bb with A♠9♠, folded to you.",options:["All-in","Raise 2.2bb"],correct:0,explain:"Under 15bb there is no raise-small. Commit or fold.",rule:"Never raise-fold a short stack."},
+ {cards:["K♣","9♣"],hero:"BTN",scenario:"45bb in phase three; the blinds have 10bb each.",options:["Raise small — pressure","All-in","Fold"],correct:0,explain:"Big stacks raise small and often — shorties can't fight back cheaply.",rule:"Big stack: pressure, don't gamble."},
+ {cards:["6♠","6♥"],hero:"SB",raiser:"BTN",scenario:"20bb in the SB. An aggressive button opens 2.2bb.",options:["All-in","Call","Fold"],correct:0,explain:"At 20bb small pairs re-shove against wide openers.",rule:"20bb and under: your re-raise is all-in."},
+ {cards:["A♥","J♥"],hero:"CO",raiser:"BB",board:["A♠","8♦","6♣","3♠","2♥"],scenario:"River, top pair vs the office calling station. They check.",options:["Bet — they call worse","Check — don't risk it"],correct:0,explain:"Thin value is the whole game against stations.",rule:"Never bluff a station; always value bet one."},
+ {cards:["A♠","Q♠"],hero:"BTN",raiser:"UTG",scenario:"Phase one. The table nit re-raises your open, big. A♠Q♠.",options:["Call","Fold"],correct:1,explain:"The nit's big raise is QQ+/AK. AQ is dominated everywhere.",rule:"When the nit wakes up — fold and move on."},
+ {cards:["K♦","7♦"],hero:"BTN",scenario:"50bb, phase two. Folded to you on the button.",options:["Raise — steal","Fold"],correct:0,explain:"Middle phase, late seat, unopened pot: steal.",rule:"Phase two: every unopened late-position pot is yours."}]};
+
+const SIM=[
+ {level:"6:20 · Level 1 — 25/50",setStack:300,cards:["7♠","2♦"],hero:"UTG",scenario:"First hand of the night. 72o under the gun.",options:["Fold","Raise — set the tone"],correct:0,win:{d:0,note:"Patience. You fold and sip your drink."},lose:{d:-4,note:"You raise, get called, miss everything, give up. −4bb for nothing."},rule:"Setting the tone is done with tight folds, not loose raises."},
+ {level:"6:35 · Level 2 — 50/100",cards:["A♦","Q♠"],hero:"HJ",scenario:"Folded to you in the hijack with A♦Q♠.",options:["Raise 2.5bb","Limp"],correct:0,win:{d:3,note:"Blinds fold, one caller folds to your flop bet. +3bb."},lose:{d:1,note:"You limp, four players see the flop, you win a tiny pot. +1bb — should've been more."},rule:"Raise your good hands. Limping wins small; raising wins the pot."},
+ {level:"6:48 · Level 3 — 100/200",cards:["K♠","J♦"],hero:"UTG",scenario:"K♠J♦ first to act.",options:["Fold","Raise"],correct:0,win:{d:0,note:"Folded. The raiser behind shows AK at showdown — you dodged domination."},lose:{d:-6,note:"You raise, get called by KQ — and pay off a pair. −6bb."},rule:"KJo from early seats is a classic money-loser. Fold it."},
+ {level:"6:55 · Level 3 — 100/200",cards:["Q♥","Q♦"],hero:"CO",scenario:"Queens in the cutoff. The office calling station limps ahead of you.",options:["Raise to ~4.5bb","Limp along to be sneaky"],correct:0,win:{d:12,note:"Limper calls, misses, pays two streets. +12bb. Your stack: growing."},lose:{d:3,note:"Five players see the flop; you win a small scary pot. +3bb and it could've been worse."},rule:"Attack limpers with your good hands — they came to call, so charge them."},
+ {level:"7:18 · Level 4 — 200/400 (post-break)",cards:["A♠","5♠"],hero:"BTN",raiser:"CO",scenario:"The table's most active player raises from the CO. A♠5♠ on the button.",options:["Re-raise (3-bet)","Call","Fold"],correct:0,win:{d:4,note:"He thinks, mutters, folds. +4bb without a flop."},lose:{d:-2,note:"You call, the flop misses, he bets, you fold. −2bb drip."},rule:"Suited aces make great re-raise bluffs — your ace blocks his monsters."},
+ {level:"7:32 · Level 5 — 300/600",setStack:60,cards:["K♦","7♦"],hero:"BTN",scenario:"You took the 10k top-up at the break. Blinds now climb every 15 minutes. Folded to you on the button.",options:["Raise 2.2bb — steal","Fold — K7 is weak"],correct:0,win:{d:2.5,note:"Both blinds fold. +2.5bb — that's a real pot now."},lose:{d:0,note:"You fold. The SB shows 92o and takes it. That pot was yours."},rule:"Phase two begins: steal every unopened late-position pot."},
+ {level:"7:40 · Level 5 — 300/600",cards:["A♣","T♣"],hero:"CO",scenario:"The calling station limps again. A♣T♣ in the cutoff.",options:["Iso-raise to ~4bb","Limp along","Fold"],correct:0,win:{d:4,note:"He calls, checks the flop, folds to your bet. +4bb."},lose:{d:1,note:"Limped pot, everyone misses, it gets checked down. +1bb, tiny."},rule:"Limpers are ATMs. Raise them, bet the flop, collect."},
+ {level:"7:50 · Level 6 — 500/1,000",cards:["8♦","6♦"],hero:"BB",raiser:"BTN",scenario:"Button min-raises your blind. 8♦6♦.",options:["Call — 1 more to see three cards","Fold"],correct:0,win:{d:6,note:"Flop 7♠5♦2♣ — you turn the straight and get paid. +6bb."},lose:{d:-1,note:"You fold, flashing your cards. The flop comes 7-5-2. The table groans for you."},rule:"Suited and connected in the BB vs a min-raise: always defend."},
+ {level:"7:57 · Level 6 — 500/1,000",cards:["9♥","9♣"],hero:"BTN",raiser:"HJ",scenario:"A solid player raises from the HJ. Nines on the button, ~55bb effective.",options:["Call in position","Re-raise","Fold"],correct:0,win:{d:14,note:"Flop K♠9♠4♦ — set! He bets his AK twice. +14bb. Big stack now."},lose:{d:-7,note:"You 3-bet, he 4-bets, you have to fold nines face-up. −7bb."},rule:"Middle pairs vs solid raisers: call in position, hunt sets."},
+ {level:"8:05 · Level 7 — 700/1,400",cards:["A♥","Q♥"],hero:"SB",raiser:"CO",scenario:"The aggressive CO opens your blinds for the third time. A♥Q♥ in the SB.",options:["Re-raise big","Just call","Fold"],correct:0,win:{d:5,note:"He snap-folds. The table notices you're not to be messed with. +5bb."},lose:{d:-3,note:"You call, whiff the flop out of position, check-fold. −3bb."},rule:"SB doesn't call. Re-raise or fold — and AQs re-raises."},
+ {level:"8:30 · PHASE 3 announced — 1,500/3,000",setStack:16,cards:["A♦","9♠"],hero:"CO",scenario:"Phase 3 blinds just got announced — bigger than anyone hoped. Folded to you with 16bb.",options:["All-in","Raise 2.2bb","Fold"],correct:0,win:{d:3.5,note:"Everyone folds. +3.5bb — shoves pick up real money now."},lose:{d:-2.2,note:"You raise small, the BB shoves, you fold. −2.2bb the forbidden way."},rule:"Short with a hand worth playing: commit. Raise-then-fold is the only wrong answer."},
+ {level:"8:50 · 2,500/5,000",cards:["6♠","6♦"],hero:"BB",raiser:"BTN",scenario:"~17bb in the BB. The table maniac on the button (huge stack, raising everything) makes it 2.2bb.",options:["All-in","Call","Fold"],correct:0,win:{d:18,note:"He calls with K♥J♥... your sixes hold! DOUBLE UP. The table erupts."},lose:{d:-1,note:"You fold. He shows 84o and drags your blind. Ouch."},rule:"Short in the BB vs a bully: re-shove your pairs and live with it."},
+ {level:"9:05 · 4,000/8,000",cards:["K♣","9♣"],hero:"BTN",scenario:"Your double-up made you a real stack (~35bb). The blinds have 8bb and 6bb. Folded to you.",options:["Raise small — pressure","All-in — crush them","Fold"],correct:0,win:{d:2.5,note:"Both fold, again. You're farming them every orbit now. +2.5bb."},lose:{d:0,note:"You fold, being 'nice'. In a tournament, nice is how you finish fourth."},rule:"Big stack, short blinds: raise small, raise often. No mercy at the office."},
+ {level:"9:25 · FINAL TWO — 10,000/20,000",cards:["A♠","Q♠"],hero:"SB",scenario:"Heads-up for the trophy. You have him barely covered. A♠Q♠ on the button/SB.",options:["All-in","Limp and trap","Fold"],correct:0,win:{d:20,note:"He calls with K♦J♦. Board runs clean. YOU ARE THE CHAMPION. 🏆"},lose:{d:5,note:"You limp, he checks, you win a small pot — and hand him hands to claw back. It works out eventually, but the shove was the play."},rule:"Heads-up, short, with AQs: get it in. Fortune favours the shover."}];
+
+/* ============ range grid data ============ */
+const RANKS=["A","K","Q","J","T","9","8","7","6","5","4","3","2"];
+const cellLabel=(r,c)=>r===c?RANKS[r]+RANKS[c]:(c>r?RANKS[r]+RANKS[c]+"s":RANKS[c]+RANKS[r]+"o");
+const RANGE_UTG=new Set(["AA","KK","QQ","JJ","TT","99","88","77","66","55","AKs","AQs","AJs","ATs","A9s","A5s","KQs","KJs","KTs","QJs","QTs","JTs","T9s","AKo","AQo","AJo","KQo"]);
+const RANGE_BTN=new Set(["AA","KK","QQ","JJ","TT","99","88","77","66","55","44","33","22","AKs","AQs","AJs","ATs","A9s","A8s","A7s","A6s","A5s","A4s","A3s","A2s","KQs","KJs","KTs","K9s","K8s","K7s","K6s","K5s","K4s","K3s","K2s","QJs","QTs","Q9s","Q8s","Q7s","Q6s","Q5s","JTs","J9s","J8s","J7s","T9s","T8s","T7s","98s","97s","96s","87s","86s","85s","76s","75s","65s","64s","54s","53s","AKo","AQo","AJo","ATo","A9o","A8o","A7o","A6o","A5o","A4o","A3o","A2o","KQo","KJo","KTo","K9o","K8o","K7o","QJo","QTo","Q9o","JTo","J9o","T9o","T8o","98o","87o"]);
+const UTG_P2=new Set([...RANGE_UTG,"ATo","KJo"]);
+const BTN_P2=new Set([...RANGE_BTN]);["53s","64s","85s","96s"].forEach(h=>BTN_P2.delete(h));
+const UTG_P3=new Set(["22","33","44","55","66","77","88","99","TT","JJ","QQ","KK","AA","A7s","A8s","A9s","ATs","AJs","AQs","AKs","A5s","A9o","ATo","AJo","AQo","AKo","KTs","KJs","KQs","KQo","QJs"]);
+const BTN_P3=new Set(["22","33","44","55","66","77","88","99","TT","JJ","QQ","KK","AA","A2s","A3s","A4s","A5s","A6s","A7s","A8s","A9s","ATs","AJs","AQs","AKs","A2o","A3o","A4o","A5o","A6o","A7o","A8o","A9o","ATo","AJo","AQo","AKo","K2s","K3s","K4s","K5s","K6s","K7s","K8s","K9s","KTs","KJs","KQs","K7o","K8o","K9o","KTo","KJo","KQo","Q6s","Q7s","Q8s","Q9s","QTs","QJs","Q9o","QTo","QJo","J8s","J9s","JTs","J9o","JTo","T8s","T9s","T9o","97s","98s","87s"]);
+const RANGES={P1:{UTG:RANGE_UTG,BTN:RANGE_BTN},P2:{UTG:UTG_P2,BTN:BTN_P2},P3:{UTG:UTG_P3,BTN:BTN_P3}};
+const RPCT={P1:{UTG:"~12%",BTN:"~45%"},P2:{UTG:"~14%",BTN:"~44%"},P3:{UTG:"~15%",BTN:"~39%"}};
+const PHASECAP={
+ P1:"Phase 1, deep: speculative suited hands earn their keep — small pairs and suited connectors hunt big pots.",
+ P2:"Phase 2, ~50bb: almost the same lists — big offsuit cards gain a little, the tiniest suited hands drop. The real change is commitment: raises now risk meaningful stacks.",
+ P3:"Phase 3, ~10bb: these are ALL-IN ranges. Yes — every pair and every ace jams from the button. Wider than feels natural is correct.",
+};
+
+/* ============ state ============ */
+const ASSESS=[
+ {cards:["A♦","J♣"],hero:"CO",scenario:"6:25pm, first drinks poured. A♦J♣ in the cutoff — folded to you.",
+  options:[{t:"Limp — see a cheap flop with a pretty hand",k:"fish",q:"🐟 The fish special: pretty hand, timid money."},
+   {t:"Raise to 2.5bb",k:"shark",q:"🦈 Clean. If it's worth playing, it's worth raising."},
+   {t:"Fold — too risky this early",k:"crab",q:"🦀 Overcautious — AJ from the cutoff is a standard raise."}]},
+ {cards:["A♠","A♣"],hero:"UTG",scenario:"6:35pm. First hand you've been dealt: pocket aces, first to act.",
+  options:[{t:"Limp — trap the whole table",k:"fish",q:"🐟 Five callers later, someone's random two pair traps YOU."},
+   {t:"Raise 2.5bb — same as always",k:"shark",q:"🦈 Same size every hand. Nobody knows you have the nuts — that's the point."},
+   {t:"Raise huge — 10bb, protect them",k:"crab",q:"🦀 Everyone folds and your aces win pocket change."}]},
+ {cards:["J♥","J♦"],hero:"CO",raiser:"UTG",scenario:"7:50pm. Greg from Finance has folded every hand for an hour. You raise jacks — Greg re-raises BIG.",
+  options:[{t:"Call — jacks are too pretty to fold",k:"fish",q:"🐟 Pretty hands pay for other people's holidays. Greg has queens or better."},
+   {t:"Fold — Greg finally woke up with it",k:"shark",q:"🦈 Cold-blooded and correct. The nit's first raise means exactly what it says."},
+   {t:"All-in — pressure him back",k:"fish",q:"🐟 Straight into the shark's mouth. He snap-calls with kings."}]},
+ {cards:["9♠","8♠"],hero:"BTN",raiser:"BB",board:["K♦","7♣","2♥"],scenario:"8:05pm. You raised, and Dana — who has called every single hand tonight — checks this flop to you. You have nothing.",
+  options:[{t:"Fire a big bluff — make her fold",k:"fish",q:"🐟 Dana has never folded. Dana will never fold."},
+   {t:"Check — she calls everything, save the chips",k:"shark",q:"🦈 Exactly. You can't bluff a calling station."},
+   {t:"Bet small 'for information'",k:"crab",q:"🦀 Information bets against stations are donations with a clipboard."}]},
+ {cards:["K♠","J♦"],hero:"UTG",scenario:"6:40pm. First to act at a full table. Two picture cards sparkle at you.",
+  options:[{t:"Raise — paint cards!",k:"fish",q:"🐟 The classic. KJo from the first seat is dominated by everything that fights back."},
+   {t:"Fold",k:"shark",q:"🦈 Disciplined. Same cards two seats later is a raise — position first."},
+   {t:"Limp in quietly",k:"crab",q:"🦀 Half-committing to a hand you shouldn't play at all."}]},
+ {cards:["A♣","Q♣"],hero:"HJ",scenario:"7:25pm. Two players limp in front of you. A♣Q♣ in the hijack.",
+  options:[{t:"Limp along — keep it friendly",k:"fish",q:"🐟 Friendly is how you split pots four ways with the best hand."},
+   {t:"Raise to ~5bb — punish the limpers",k:"shark",q:"🦈 Limpers announced weakness. Charge them for the flop they want."},
+   {t:"Fold — too many people in",k:"crab",q:"🦀 Folding AQs to two limps is leaving money on the felt."}]},
+ {cards:["8♦","6♦"],hero:"BB",raiser:"BTN",scenario:"7:45pm. The button min-raises your big blind. 8♦6♦.",
+  options:[{t:"Re-raise — make a move",k:"fish",q:"🐟 A bluff into someone who just needs to call 2 more? That's a donation."},
+   {t:"Call — one more blind for three cards",k:"shark",q:"🦈 Right price, right hand. Suited and connected prints here."},
+   {t:"Fold — it's junk",k:"crab",q:"🦀 Too tight. You'd already paid half the entry fee."}]},
+ {cards:["A♠","9♠"],hero:"CO",scenario:"8:45pm. Blinds are enormous, you're down to 13 big blinds. A♠9♠, folded to you.",
+  options:[{t:"Raise small — fold if someone shoves",k:"fish",q:"🐟 The forbidden move: pay a fifth of your stack, then surrender it."},
+   {t:"All-in",k:"shark",q:"🦈 Commit or fold — at 13bb your raise IS your stack."},
+   {t:"Fold and wait for aces",k:"crab",q:"🦀 The blinds will eat you long before aces arrive."}]},
+ {cards:["K♣","9♣"],hero:"BTN",scenario:"9:00pm. You've built a big stack; the blinds each have ~8bb left and look nervous.",
+  options:[{t:"Fold K9 — be nice, they're short",k:"fish",q:"🐟 Nice finishes fourth. Their fear is your income."},
+   {t:"Raise small — make them sweat every orbit",k:"shark",q:"🦈 Relentless, cheap pressure. They must risk everything to fight back."},
+   {t:"All-in — crush them properly",k:"crab",q:"🦀 Overkill — risking your whole stack when a small raise does the same job."}]},
+ {cards:["A♥","J♥"],hero:"CO",raiser:"BB",board:["A♠","8♦","6♣","3♠","2♥"],scenario:"River. Top pair against Dana the station. She checks to you one last time.",
+  options:[{t:"Check — what if she has it?",k:"fish",q:"🐟 Scared money. She check-calls with worse all day — you just refunded her."},
+   {t:"Bet — she calls with worse",k:"shark",q:"🦈 Thin value against a station: literally how casual tournaments are won."},
+   {t:"Shove all-in — maximum value",k:"crab",q:"🦀 Right idea, wrong dial. Size it so worse hands can still call."}]},
+];
+let S={screen:"home",name:"",aIdx:0,aPick:null,sharks:0,modIdx:0,qIdx:0,picked:null,sessionRight:0,help:false,gridPhase:"P1",scores:loadScores(),
+ run:null,rIdx:0,rPicked:null,rRight:0,
+ sIdx:0,sPicked:null,stack:100,sRight:0,gridPos:"UTG"};
+
+/* ============ view helpers ============ */
+const esc=(s)=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+function cardHTML(card,small){
+  const rank=card.slice(0,-1),suit=card.slice(-1);
+  const col=(suit==="♥"||suit==="♦")?"red":"blk";
+  return `<div class="pcard ${small?"sm":""} ${col}"><div class="tl">${rank}<span>${suit}</span></div><div class="br">${suit}</div></div>`;
+}
+const SEATS=["UTG","MP","HJ","CO","BTN","SB","BB"];
+function ringHTML(hero,raiser,steals){
+  steals=steals||[];
+  const cx=130,cy=74,rx=106,ry=52;
+  let seats="";
+  SEATS.forEach((s,i)=>{
+    const ang=Math.PI*2*i/SEATS.length+Math.PI/2;
+    const x=cx+rx*Math.cos(ang),y=cy+ry*Math.sin(ang);
+    const isH=s===hero,isR=s===raiser,isSt=steals.indexOf(s)>=0;
+    seats+=`<circle cx="${x}" cy="${y}" r="${(isH||isSt)?16:12.5}" fill="${isH?"#C9A227":isR?"#C34036":isSt?"#C9A227":"rgba(246,241,227,0.12)"}" stroke="${(isH||isSt)?"#F6F1E3":"rgba(246,241,227,0.3)"}" stroke-width="${(isH||isSt)?2:1}"/>
+    <text x="${x}" y="${y+3.5}" text-anchor="middle" font-size="${(isH||isSt)?9.5:8.5}" font-weight="700" fill="${(isH||isR||isSt)?"#17211C":"#D9D2BE"}" font-family="system-ui">${s}</text>`;
+  });
+  return `<svg width="260" height="148" viewBox="0 0 260 148" style="display:block;margin:0 auto" aria-hidden="true">
+    <ellipse cx="${cx}" cy="${cy}" rx="${rx+12}" ry="${ry+14}" fill="#11503E" stroke="#C9A227" stroke-width="1.5" opacity="0.9"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${rx-18}" ry="${ry-16}" fill="none" stroke="rgba(246,241,227,0.15)" stroke-width="1"/>
+    ${seats}
+    <text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="10" fill="rgba(246,241,227,0.4)" font-family="system-ui" letter-spacing="2">${steals.length?"STEAL SEATS":raiser?"VS RAISE":"YOUR SEAT"}</text>
+  </svg>`;
+}
+function fancyRing(fills,badges,center){
+  const cx=130,cy=74,rx=106,ry=52;let el="";
+  SEATS.forEach((seat,i)=>{
+    const ang=Math.PI*2*i/SEATS.length+Math.PI/2;
+    const x=cx+rx*Math.cos(ang),y=cy+ry*Math.sin(ang);
+    const f=fills[seat]||{};
+    el+=`<circle cx="${x}" cy="${y}" r="13.5" fill="${f.fill||"rgba(246,241,227,0.12)"}" stroke="${f.stroke||"rgba(246,241,227,0.3)"}" stroke-width="${f.stroke?2:1}"/>
+    <text x="${x}" y="${y+3.5}" text-anchor="middle" font-size="8.5" font-weight="700" fill="${f.text||"#D9D2BE"}" font-family="system-ui">${seat}</text>`;
+    if(badges&&badges[seat]!==undefined){
+      const bx=cx+(rx+27)*Math.cos(ang),by=cy+(ry+24)*Math.sin(ang);
+      el+=`<circle cx="${bx}" cy="${by}" r="8" fill="#C9A227"/><text x="${bx}" y="${by+3.2}" text-anchor="middle" font-size="9" font-weight="800" fill="#17211C" font-family="system-ui">${badges[seat]}</text>`;
+    }
+  });
+  return `<svg width="292" height="164" viewBox="-16 -8 292 164" style="display:block;margin:0 auto">
+    <ellipse cx="${cx}" cy="${cy}" rx="${rx+12}" ry="${ry+14}" fill="#11503E" stroke="#C9A227" stroke-width="1.5" opacity="0.9"/>
+    ${el}
+    <text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="10" fill="rgba(246,241,227,0.45)" font-family="system-ui" letter-spacing="2">${center}</text>
+  </svg>`;
+}
+function gridHTML(fixedPhase){
+  const phase=fixedPhase||S.gridPhase;
+  const range=RANGES[phase][S.gridPos];
+  const isJam=phase==="P3";
+  let cells="";
+  for(let r=0;r<13;r++)for(let c=0;c<13;c++){
+    const label=cellLabel(r,c);
+    const cls=range.has(label)?(r===c?"in-p":(c>r?"in-s":"in-o")):"";
+    cells+=`<div class="cell ${cls}">${label}</div>`;
+  }
+  const posRow=`<div class="toggle-row">
+    <button class="${S.gridPos==="UTG"?"on":""}" onclick="setGrid('UTG')">First position (tight)</button>
+    <button class="${S.gridPos==="BTN"?"on":""}" onclick="setGrid('BTN')">Button (wide)</button>
+  </div>`;
+  const phaseRow=fixedPhase?"":`<div class="toggle-row">
+    <button class="${S.gridPhase==="P1"?"on":""}" onclick="setGridPhase('P1')">P1 · deep</button>
+    <button class="${S.gridPhase==="P2"?"on":""}" onclick="setGridPhase('P2')">P2 · ~50bb</button>
+    <button class="${S.gridPhase==="P3"?"on":""}" onclick="setGridPhase('P3')">P3 · ~10bb</button>
+  </div>`;
+  return `<div style="margin:6px 0 4px">${posRow}${phaseRow}
+  <div class="grid13">${cells}</div>
+  <div class="gridfoot"><span>${isJam?"gold = ALL-IN":"suited above · pairs diagonal · offsuit below"}</span><span style="color:var(--brass);font-weight:700">${RPCT[phase][S.gridPos]} of hands</span></div>
+  <div class="viz-cap">${PHASECAP[phase]}</div></div>`;
+}
+const LADDER=[
+ {n:9,name:"Straight flush",note:"five in a row, one suit — near unbeatable",cards:["9♠","8♠","7♠","6♠","5♠"]},
+ {n:8,name:"Four of a kind",note:"all four of one rank",cards:["8♠","8♦","8♣","8♥","A♦"]},
+ {n:7,name:"Full house",note:"three of a kind + a pair",cards:["J♠","J♦","J♣","5♥","5♠"]},
+ {n:6,name:"Flush",note:"five of one suit — BEATS a straight",cards:["K♥","J♥","8♥","6♥","2♥"],hot:true},
+ {n:5,name:"Straight",note:"five in a row, mixed suits",cards:["9♣","8♦","7♠","6♥","5♣"]},
+ {n:4,name:"Three of a kind",note:"a 'set' or 'trips'",cards:["7♠","7♦","7♣","K♥","2♠"]},
+ {n:3,name:"Two pair",note:"higher pair breaks ties",cards:["Q♠","Q♦","4♣","4♥","A♠"]},
+ {n:2,name:"One pair",note:"beats every high card hand",cards:["9♠","9♦","K♣","7♥","2♦"]},
+ {n:1,name:"High card",note:"nothing made — best single card plays",cards:["A♦","J♣","8♠","5♥","2♣"]},
+];
+function ladderHTML(){
+  return `<div class="label" style="margin-bottom:8px">The ladder — best at the top</div><div class="ladder">`+LADDER.map(r=>
+    `<div class="ladder-row ${r.hot?"hot":""}">
+      <div class="ladder-num">${r.n}</div>
+      <div class="ladder-info"><div class="ladder-name">${r.name}</div><div class="ladder-note">${r.note}</div></div>
+      <div class="ladder-cards">${r.cards.map(c=>cardHTML(c,false).replace('class="pcard ','class="pcard xs ')).join("")}</div>
+    </div>`).join("")+`</div>`;
+}
+const NIGHTMAP=[
+ {t:"6:15",title:"Cards in the air — 300bb deep",sub:"15,000 at 25/50, 15-minute levels from the start. Ch 3 phase-one rules: tight, small pots, zero heroics — and the room is mostly casual callers, so value bet, don't bluff.",chip:"Ch 3"},
+ {t:"~7:00",title:"Break — the 10k top-up",sub:"One 10,000-chip top-up if you haven't re-bought. Down chips? Take it, no shame. After this, what you have is what you have.",warn:true},
+ {t:"7:15",title:"Phase 2 — the squeeze",sub:"200/400 climbing to 700/1,400 by 8:00. Average stack ~60bb falling to under 20bb. Ch 2 tactics: start stealing every orbit.",chip:"Ch 3"},
+ {t:"~8:15",title:"Break — count in big blinds",sub:"Ignore the chip count; divide by the big blind. Under 20bb? Phase-three rules from here.",warn:true},
+ {t:"~8:30",title:"Phase 3 — blinds announced on the night",sub:"15-minute levels and expect acceleration. Tighter hands — and when you play one, play it hard.",chip:"Ch 3"},
+ {t:"~9:30",title:"Final table & the trophy 🏆",sub:"Whoever executed phases two and three is holding it."},
+];
+function nightMapHTML(){
+  return `<div class="label" style="margin:4px 0 6px">Your night at a glance</div><div class="nightmap">`+NIGHTMAP.map(r=>
+    `<div class="nm-row ${r.warn?"warn":""}">
+      <div class="nm-time">${r.t}</div>
+      <div class="nm-title">${r.title}${r.chip?`<span class="nm-chip">${r.chip}</span>`:""}</div>
+      <div class="nm-sub">${r.sub}</div>
+    </div>`).join("")+`</div>`;
+}
+function xsCard(c){return cardHTML(c,false).replace('class="pcard ','class="pcard xs ');}
+function chip(c1,c2,tag){
+  const cls={RAISE:"t-raise",FOLD:"t-fold","ALL-IN":"t-shove",SHOVE:"t-shove",DEFEND:"t-defend",WINS:"t-raise",LOSES:"t-fold"}[tag]||"t-fold";
+  return `<div class="handchip"><div class="hc-cards">${xsCard(c1)}${xsCard(c2)}</div><div class="hc-tag ${cls}">${tag}</div></div>`;
+}
+function vizBox(title,inner,cap){
+  return `<div class="vizbox"><div class="viz-title">${title}</div>${inner}${cap?`<div class="viz-cap">${cap}</div>`:""}</div>`;
+}
+const VIZ={
+ ladder:ladderHTML,
+ kicker(){
+  const board=["A♥","8♠","5♦","2♣","3♥"].map(xsCard).join("");
+  const inner=`<div class="board-lbl">SHARED BOARD</div><div class="board-strip" style="margin-bottom:12px">${board}</div>
+   <div class="duel">
+     <div class="duel-hand"><div class="hc-cards">${xsCard("A♠")}${xsCard("K♦")}</div><div class="hc-tag t-raise">WINS</div><div class="duel-who" style="color:var(--brass)">YOU — K KICKER</div></div>
+     <div class="duel-hand"><div class="hc-cards">${xsCard("A♦")}${xsCard("Q♣")}</div><div class="hc-tag t-fold">LOSES</div><div class="duel-who" style="color:var(--dim)">THEM — Q KICKER</div></div>
+   </div>`;
+  return vizBox("The kicker decides",inner,"Both made a pair of aces. The side card breaks the tie — king beats queen.");
+ },
+ streets(){
+  const g=(lbl,cards)=>`<div class="st-group"><div class="st-cards">${cards.map(xsCard).join("")}</div><div class="st-lbl">${lbl}</div></div>`;
+  const inner=`<div class="streets">${g("YOU",["A♠","K♦"])}<div class="st-arrow">→</div>${g("FLOP",["Q♥","7♠","2♦"])}<div class="st-arrow">→</div>${g("TURN",["J♣"])}<div class="st-arrow">→</div>${g("RIVER",["A♥"])}</div>`;
+  return vizBox("One hand, four stages",inner,"Betting happens before the flop and after every new card. Your two cards + the five shared = your best five-card hand.");
+ },
+ tight(){
+  const row=[chip("Q♦","4♣","FOLD"),chip("J♠","7♦","FOLD"),chip("9♥","5♣","FOLD"),chip("A♠","K♠","RAISE"),chip("T♦","2♠","FOLD"),chip("6♣","3♦","FOLD"),chip("Q♥","Q♣","RAISE"),chip("T♠","8♦","FOLD")].join("");
+  return vizBox("One orbit of tight-aggressive",`<div class="chiprow">${row}</div>`,"Eight hands dealt: fold six, raise two — and raise them with confidence. That is the whole style.");
+ },
+ phases(){
+  const col=(h,bb,lbl)=>`<div class="pb-col"><div class="pb-bb">${bb}</div><div class="pb-bar" style="height:${h}%"></div><div class="pb-lbl">${lbl}</div></div>`;
+  const inner=`<div class="phasebars">${col(92,"300bb","Phase 1<br>deep")}${col(30,"~60bb","Phase 2<br>squeeze")}${col(12,"<20bb","Phase 3<br>commit")}</div>`;
+  return vizBox("Your stack shrinks all night — by design",inner,"Same chips, rising blinds. Each phase has its own chapter and its own default plan.");
+ },
+ openStrips(){
+  const early=[chip("A♣","K♦","RAISE"),chip("T♠","T♥","RAISE"),chip("A♥","Q♥","RAISE"),chip("A♦","8♦","FOLD"),chip("K♦","J♣","FOLD"),chip("Q♦","T♠","FOLD")].join("");
+  const late=[chip("A♦","8♦","RAISE"),chip("K♦","J♣","RAISE"),chip("Q♦","T♠","RAISE"),chip("7♠","6♠","RAISE")].join("");
+  return vizBox("First seats — strict",`<div class="chiprow">${early}</div>`,"Premiums raise, the almost-good-enough hands fold.")+
+         vizBox("Same hands on the button",`<div class="chiprow">${late}</div>`,"The cards did not change. The seat did.");
+ },
+ stealSeats(){
+  return vizBox("Your hunting seats",ringHTML(null,null,["CO","BTN","SB"]),"Folded to you in a gold seat? Raise. Few or no players left behind means the blinds are yours for the taking.");
+ },
+ stealStrip(){
+  const row=[chip("K♥","7♥","RAISE"),chip("A♦","4♦","RAISE"),chip("K♠","Q♦","RAISE"),chip("J♠","4♦","FOLD"),chip("9♥","3♣","FOLD"),chip("Q♦","6♠","FOLD")].join("");
+  return vizBox("Stealing from the button",`<div class="chiprow">${row}</div>`,"Suited hands, aces, and two big cards raise. Genuine junk still folds — a steal is a bet, not a dare.");
+ },
+ bbStrip(){
+  const row=[chip("8♦","6♦","DEFEND"),chip("4♠","4♦","DEFEND"),chip("A♥","5♣","DEFEND"),chip("J♥","T♥","DEFEND"),chip("9♠","2♦","FOLD"),chip("J♦","3♣","FOLD")].join("");
+  return vizBox("Big blind vs a small raise",`<div class="chiprow">${row}</div>`,"Cards that work together — suited, connected, paired, or with an ace — call one more blind. Disconnected junk folds.");
+ },
+ twoButtons(){
+  const inner=`<div class="tb-wrap"><div class="tb allin">ALL-IN</div><div class="tb fold">FOLD</div></div><div class="tb-no"><s>raise small</s> ✕ forbidden under 15bb</div>`;
+  return vizBox("Under ~12bb: your only two buttons",inner,"Short-stacked, the middle option is the only wrong one: it commits chips, then surrenders them.");
+ },
+ orderRings(){
+  const pre={UTG:{fill:"#C9A227",text:"#17211C",stroke:"#F6F1E3"}},preB={};
+  ["UTG","MP","HJ","CO","BTN","SB","BB"].forEach((x,i)=>preB[x]=i+1);
+  const post={SB:{fill:"#C9A227",text:"#17211C",stroke:"#F6F1E3"},BTN:{fill:"rgba(201,162,39,0.45)",text:"#17211C"}},postB={};
+  ["SB","BB","UTG","MP","HJ","CO","BTN"].forEach((x,i)=>postB[x]=i+1);
+  return vizBox("Before the flop — UTG speaks first",fancyRing(pre,preB,"PREFLOP ORDER"),"The blinds already paid, so they act last before the flop.")+
+   vizBox("After the flop — the order flips",fancyRing(post,postB,"POSTFLOP ORDER"),"Now the blinds speak first and the button speaks last — on every remaining street.");
+ },
+ zonesRing(){
+  const z={UTG:{fill:"rgba(195,64,54,0.55)",text:"#F6F1E3"},MP:{fill:"rgba(195,64,54,0.55)",text:"#F6F1E3"},
+   HJ:{fill:"rgba(246,241,227,0.2)",text:"#F6F1E3"},
+   CO:{fill:"#C9A227",text:"#17211C"},BTN:{fill:"#C9A227",text:"#17211C"},SB:{fill:"rgba(201,162,39,0.55)",text:"#17211C"}};
+  return vizBox("The three zones",fancyRing(z,null,"TIGHT → WIDE"),"Red zone (UTG, MP): premium hands only. Middle (HJ): decent hands. Gold zone (CO, BTN — plus the SB when everyone folded): open wide. Your seat sets your looseness.");
+ },
+ lastToAct(){
+  const cards=xsCard("T♠")+xsCard("9♠");
+  const board=["Q♥","7♠","2♦"].map(xsCard).join("");
+  const inner=`<div class="board-lbl">FLOP</div><div class="board-strip" style="margin-bottom:10px">${board}</div>
+   <div class="infosplit">
+    <div class="info-half"><div class="ih-cards">${cards}</div><div class="ih-txt"><b>Acting first:</b> you missed. Bet? Check? You know nothing about anyone. Every choice is a guess.</div></div>
+    <div class="info-half good"><div class="ih-cards">${cards}</div><div class="ih-txt"><b>Acting last:</b> same hand — but two players just checked. They are weak. Your small bet wins the pot right now.</div></div>
+   </div>`;
+  return vizBox("Same cards. Different seat. Different game.",inner,"Acting last turns guesses into decisions. That is the entire value of position.");
+ },
+ ptypes(){
+  const card=(icon,name,tell,beat,hot)=>`<div class="ptype ${hot?"hot":""}"><div class="pt-icon">${icon}</div><div class="pt-name">${name}</div><div class="pt-tell">${tell}</div><div class="pt-beat">${beat}</div></div>`;
+  const inner=`<div class="ptypes">
+   ${card("🛋️","Calling Station","Calls everything, folds nothing, loves any pair. Most of your table.","NEVER bluff. Value bet every decent hand — even thin.",true)}
+   ${card("🗿","The Nit","One hand an hour. Raises only monsters.","Steal their blinds forever. When they raise big — believe and fold.")}
+   ${card("🎢","The Maniac","Raises everything, loves pressure.","Stop bluffing. Call lighter, re-raise good hands, let them hang themselves.")}
+   ${card("🎯","The Solid One","The colleague who actually plays. Rare.","Stay out of their pots. Farm everyone else.")}
+  </div>`;
+  return vizBox("The four people at your table",inner,"Casual room caveat: assume everyone is a station until they prove otherwise.");
+ },
+ typeLeft(){
+  const f={HJ:{fill:"#C9A227",text:"#17211C",stroke:"#F6F1E3"},CO:{fill:"#C34036",text:"#F6F1E3",stroke:"#F6F1E3"}};
+  return vizBox("The seat that matters most: your LEFT",fancyRing(f,{CO:"!"},"DANGER SEAT"),"You are gold; red acts right after you, all night. A nit there? Steal freely. A station? Raise for value only. A maniac? Tighten up and let them raise into you.");
+ },
+ gridP1(){return vizBox("Phase 1 opening ranges",gridHTML("P1"));},
+ gridP2(){return vizBox("Phase 2 opening ranges",gridHTML("P2"));},
+ gridP3(){return vizBox("Phase 3 ALL-IN ranges (~10bb)",gridHTML("P3"));},
+ shoveStrip(){
+  const row=[chip("2♠","2♦","ALL-IN"),chip("A♦","2♣","ALL-IN"),chip("K♠","T♠","ALL-IN"),chip("Q♠","J♠","ALL-IN"),chip("Q♦","6♦","FOLD"),chip("J♣","4♦","FOLD")].join("");
+  return vizBox("~10bb, folded to you",`<div class="chiprow">${row}</div>`,"Any pair, any ace, big suited cards: jam. A notch tighter from the first seats, a notch wider from the button and SB.");
+ },
+};
+const GLOSSARY=[
+ {k:["limp"],t:"Limp",d:"Just calling the big blind instead of raising. Weak, avoid it."},
+ {k:["big blind","bb.","bb,","bb "],t:"Big blind (bb)",d:"The forced bet posted before cards; also the unit for measuring stacks (a 30bb stack = 30 big blinds)."},
+ {k:["small blind"],t:"Small blind",d:"The smaller forced bet, left of the button. Acts first after the flop."},
+ {k:["button"],t:"Button",d:"The dealer position — acts last after the flop, best seat at the table."},
+ {k:["utg","under the gun"],t:"UTG",d:"'Under the gun' — first to act before the flop, worst seat."},
+ {k:["cutoff"],t:"Cutoff (CO)",d:"The seat right before the button; second-best position."},
+ {k:["hijack","hj"],t:"Hijack (HJ)",d:"Two seats before the button; middle-late position."},
+ {k:["3-bet","re-raise","re-raises"],t:"Re-raise (3-bet)",d:"Raising over someone else's raise."},
+ {k:["4-bet"],t:"4-bet",d:"Re-raising a re-raise — usually a monster hand."},
+ {k:["all-in","shove","jam"],t:"All-in / shove",d:"Betting your entire stack."},
+ {k:["re-shove"],t:"Re-shove",d:"Going all-in over someone's raise."},
+ {k:["check"],t:"Check",d:"Passing without betting — only allowed when nobody has bet yet."},
+ {k:["fold"],t:"Fold",d:"Giving up the hand and your claim to the pot."},
+ {k:["kicker"],t:"Kicker",d:"Your side card — breaks ties when both players have the same pair."},
+ {k:["suited"],t:"Suited (s)",d:"Both your cards share a suit — can make flushes, plays better."},
+ {k:["offsuit"],t:"Offsuit (o)",d:"Two different suits — no flush help, needs to be stronger to play."},
+ {k:["flop"],t:"Flop",d:"The first three shared cards, dealt together."},
+ {k:["river"],t:"River",d:"The fifth and final shared card — last round of betting."},
+ {k:["showdown"],t:"Showdown",d:"Cards face-up at the end; best five-card hand wins."},
+ {k:["steal"],t:"Steal",d:"Raising from a late seat mainly to win the blinds uncontested."},
+ {k:["iso-raise"],t:"Iso-raise",d:"Raising over a limper to get them alone (isolated) in the pot."},
+ {k:["min-raise"],t:"Min-raise",d:"The smallest legal raise — exactly double the bet."},
+ {k:["calling station","station"],t:"Calling station",d:"A player who calls everything and folds nothing. Never bluff them."},
+ {k:["nit"],t:"Nit",d:"An extremely tight player — only plays (and raises) monster hands."},
+ {k:["maniac"],t:"Maniac",d:"An extremely aggressive player who raises constantly."},
+ {k:["dominated"],t:"Dominated",d:"Your hand shares a card with a better hand (KJ vs KQ) — you lose most pots."},
+ {k:["top pair"],t:"Top pair",d:"Pairing the highest card on the board."},
+ {k:["set"],t:"Set",d:"Three of a kind made with a pair in your hand — very strong, well hidden."},
+ {k:["flush"],t:"Flush",d:"Five cards of one suit. Beats a straight."},
+ {k:["straight"],t:"Straight",d:"Five cards in a row, any suits."},
+ {k:["orbit"],t:"Orbit",d:"One full lap of the button around the table."},
+ {k:["heads-up"],t:"Heads-up",d:"Just two players left contesting the pot (or the tournament)."},
+ {k:["premium"],t:"Premium hand",d:"The very top hands: big pairs (QQ+), AK, AQ."},
+ {k:["blinds"],t:"Blinds",d:"The two forced bets (SB + BB) that seed every pot."},
+];
+const REFRESH={
+ cards:"Ladder refresher: pair beats high card; flush beats straight; a kicker breaks ties. A range is the list of hands you play the same way — suited (s) hands enter ranges earlier than offsuit (o).",
+ position:"Order refresher: preflop UTG speaks first and the blinds last; postflop it flips. Late seats play wide, early seats tight. Raise or fold — never limp; when unsure, fold.",
+ strategy:"Room refresher: mostly casual callers — value bet them, never bluff them. Phase 1 deep: don't go broke without a big hand. Phase 2: steal every orbit. Phase 3: tighter hands, harder commitment.",
+};
+function helpHTML(h,chapId){
+  const text=(h.scenario+" "+h.options.join(" ")).toLowerCase();
+  const terms=GLOSSARY.filter(g=>g.k.some(k=>text.includes(k))).slice(0,6);
+  const ref=chapId?REFRESH[chapId]:null;
+  const btn=`<button class="helpbtn ${S.help?"on":""}" onclick="toggleHelp()">🛈 ${S.help?"Hide the refresher":"Explain the terms — quick refresher"}</button>`;
+  if(!S.help)return btn;
+  const body=(ref?`<div class="hp-ref">📖 ${ref}</div>`:"")+
+   (terms.length?terms.map(t=>`<div class="hp-item"><b>${t.t}</b> — ${t.d}</div>`).join(""):`<div class="hp-item">No jargon in this one — trust the basics and your read.</div>`);
+  return btn+`<div class="helppanel">${body}</div>`;
+}
+function toggleHelp(){S.help=!S.help;render();}
+function optionsHTML(h,picked,fn){
+  return h.options.map((o,i)=>{
+    let cls="btn";
+    if(picked!==null){
+      if(i===h.correct)cls+=" opt-right";
+      else if(i===picked)cls+=" opt-wrong";
+      else cls+=" opt-mute";
+    }
+    return `<button class="${cls}" onclick="${fn}(${i})" ${picked!==null?"disabled":""}>${esc(o)}</button>`;
+  }).join("");
+}
+function feedbackHTML(correct,verdict,expl,rule){
+  return `<div class="feedback ${correct?"":"wrong"}">
+    <div class="verdict">${verdict}</div>
+    <div class="expl">${esc(expl)}</div>
+    <div class="rulebox">📌 ${esc(rule)}</div>
+  </div>`;
+}
+
+/* ============ screens ============ */
+function introHTML(){
+  return `<div style="text-align:center;margin-top:34px">
+    <div class="label">Five V Poker Trainer Coach</div>
+    <div class="verdict-emoji">🦈🐟</div>
+    <h1 style="font-size:30px;margin:6px 0 8px;font-weight:700">Fish or Shark?</h1>
+    <p style="color:var(--dim);font-size:14px;margin:0 18px 4px;line-height:1.6">Ten quick moments from poker night. Answer honestly — in three minutes you'll know whether this guide is for you.</p>
+    <input class="nameinput" id="nameInput" maxlength="20" placeholder="What do we call you at the table?" autocomplete="off">
+    <button class="btn gold center" onclick="submitName()">Deal me in →</button>
+    <button class="btn center" onclick="skipIntro()">Skip — straight to the guide</button>
+  </div>`;
+}
+function assessHTML(){
+  const h=ASSESS[S.aIdx];
+  const answered=S.aPick!==null;
+  const opts=h.options.map((o,i)=>{
+    let cls="btn";
+    if(answered){cls+=i===S.aPick?(o.k==="shark"?" opt-right":" opt-wrong"):" opt-mute";}
+    return `<button class="${cls}" onclick="assessPick(${i})" ${answered?"disabled":""}>${esc(o.t)}</button>`;
+  }).join("");
+  return `<div class="topbar"><span class="assess-tag">FISH OR SHARK · ${S.aIdx+1}/${ASSESS.length}</span>
+    <span>${"🦈".repeat(S.sharks)}${S.sharks?"":"&nbsp;"}</span></div>
+  ${ringHTML(h.hero,h.raiser)}
+  <div class="cards-row">${cardHTML(h.cards[0])}${cardHTML(h.cards[1])}</div>
+  ${h.board?`<div class="board-lbl">BOARD</div><div class="board-strip" style="margin-bottom:10px">${h.board.map(xsCard).join("")}</div>`:""}
+  <p class="scenario">${esc(h.scenario)}</p>
+  ${opts}
+  ${answered?`<div class="quip ${h.options[S.aPick].k}">${esc(h.options[S.aPick].q)}</div>
+  <button class="btn gold center" onclick="assessNext()">${S.aIdx+1<ASSESS.length?"Next situation →":"Get my verdict"}</button>`:""}`;
+}
+function assessDoneHTML(){
+  const n=S.sharks;
+  const who=S.name?", "+esc(S.name):"";
+  let e,t,msg;
+  if(n>=9){e="🦈";t="Apex Shark";msg="Near-flawless"+who+". You might not even need this guide — prove it by winning Tournament Night without a single miss.";}
+  else if(n>=7){e="🦈";t="Shark with training wheels";msg="Strong instincts"+who+" — but the "+(10-n)+" fishy answer"+(10-n>1?"s":"")+" will cost you real chips on the night. The chapters will sand those off fast.";}
+  else if(n>=4){e="🐟";t="Fish with ambition";msg="Good news"+who+": this guide was built precisely for you. Three chapters from now, you're the one doing the eating.";}
+  else{e="🐟";t="Chum";msg="Beautiful, delicious chum"+who+". The whole table smells it. Read Chapter 1 before someone eats your buy-in — the glow-up will be spectacular.";}
+  return `<div class="center-wrap" style="margin-top:36px">
+    <div class="label">The verdict</div>
+    <div class="verdict-emoji">${e}</div>
+    <h2 style="font-size:30px;margin:6px 0 2px">${t}</h2>
+    <div class="sharkmeter">${"🦈".repeat(n)}${"🐟".repeat(10-n)}</div>
+    <div style="font-size:14px;color:var(--brass);font-weight:700;margin-bottom:8px">${n}/${ASSESS.length} shark answers</div>
+    <p class="fine">${msg}</p>
+    ${n>=7?`<button class="btn gold center" onclick="startSim()">🏆 Prove it — play Tournament Night</button><button class="btn center" onclick="openModule(0)">Start at Chapter 1 anyway</button>`
+    :`<button class="btn gold center" onclick="openModule(0)">Start Chapter 1 — become the shark</button><button class="btn center" onclick="startAssess()">Retake the test</button>`}
+    <button class="btn center" onclick="go('home')">See everything</button>
+  </div>`;
+}
+function submitName(){
+  const el=document.getElementById("nameInput");
+  S.name=(el&&el.value?el.value.trim().slice(0,20):"");
+  saveProfile({name:S.name,skipped:true,sharks:loadProfile().sharks,verdict:loadProfile().verdict});
+  startAssess();
+}
+function skipIntro(){saveProfile({name:S.name,skipped:true});go("home");}
+function startAssess(){S.aIdx=0;S.aPick=null;S.sharks=0;S.screen="assess";render();}
+function assessPick(i){
+  if(S.aPick!==null)return;
+  S.aPick=i;
+  if(ASSESS[S.aIdx].options[i].k==="shark")S.sharks++;
+  render();
+}
+function assessNext(){
+  if(S.aIdx+1<ASSESS.length){S.aIdx++;S.aPick=null;render();}
+  else{
+    const pr=loadProfile();pr.name=S.name;pr.skipped=true;pr.sharks=S.sharks;pr.verdict=S.sharks>=7?"🦈":"🐟";saveProfile(pr);
+    S.screen="assessDone";render();
+  }
+}
+function render(){
+  const app=document.getElementById("app");
+  let html="";
+  if(S.screen==="intro")html=introHTML();
+  else if(S.screen==="assess")html=assessHTML();
+  else if(S.screen==="assessDone")html=assessDoneHTML();
+  else if(S.screen==="home")html=homeHTML();
+  else if(S.screen==="lesson")html=lessonHTML();
+  else if(S.screen==="quiz")html=quizHTML();
+  else if(S.screen==="done")html=doneHTML();
+  else if(S.screen==="run")html=runHTML();
+  else if(S.screen==="runDone")html=runDoneHTML();
+  else if(S.screen==="sim")html=simHTML();
+  else if(S.screen==="simDone")html=simDoneHTML();
+  app.innerHTML=`<div class="screen">${html}</div>`;
+  window.scrollTo(0,0);
+}
+
+function homeHTML(){
+  const chapters=CHAPTERS.map((m,i)=>{
+    const sc=S.scores[m.id];
+    return `<button class="btn" onclick="openModule(${i})">
+      <div class="row"><span>${m.title}</span><span class="score">${sc?sc.right+"/"+sc.total:"→"}</span></div>
+      <div class="sub">${m.tagline}</div></button>`;
+  }).join("");
+  const runs=[RUN_A,RUN_B].map((r)=>{
+    const sc=S.scores[r.id];
+    return `<button class="btn" onclick="startRun('${r.id}')">
+      <div class="row"><span>${r.title}</span><span class="score">${sc?sc.right+"/"+sc.total:"→"}</span></div>
+      <div class="sub">${r.desc}</div></button>`;
+  }).join("");
+  return `
+  <div style="text-align:center;margin:16px 0 4px">
+    <div class="label">Five V Poker Trainer Coach</div>
+    <h1 style="font-size:32px;margin:8px 0 4px;font-weight:700">${S.name?esc(S.name)+", win the<br>office tournament":"Win the office<br>tournament"}</h1>
+    <p style="color:var(--dim);font-size:13.5px;margin:8px 14px 0">Built for the 6pm poker night: 15,000 chips, 300bb deep at the start, top-up until the 7:00 break, blinds accelerating hard after 8:30. Every hand ends with one rule to memorise.</p>
+  </div>
+  <div class="cards-row" style="margin:16px 0 18px">${cardHTML("A♠",true)}${cardHTML("A♥",true)}</div>
+  ${nightMapHTML()}
+  <button class="btn" onclick="startAssess()" style="border-color:rgba(201,162,39,.45)">
+    <div class="row"><span>🦈🐟 Fish or Shark? — quick test</span><span class="score">${(loadProfile().sharks!==undefined)?loadProfile().verdict+" "+loadProfile().sharks+"/10":"→"}</span></div>
+    <div class="sub">Ten real moments from poker night. Find out if this guide is for you.</div>
+  </button>
+  <div class="label" style="margin:14px 0 8px">Chapters</div>${chapters}
+  <div class="label" style="margin:18px 0 8px">Practice runs</div>${runs}
+  <button class="btn gold" onclick="startSim()">
+    <div class="row"><span>🏆 Run C · Tournament night</span><span class="score">${SIM.length} hands</span></div>
+    <div class="sub">Play the full night, phase by phase. Your stack lives and dies with your decisions.</div>
+  </button>`;
+}
+
+function lessonHTML(){
+  const m=CHAPTERS[S.modIdx];
+  const paras=m.lesson.map((p,i)=>typeof p==="string"?`<p class="lesson-p ${i===0?"lead":""}">${esc(p)}</p>`:VIZ[p.viz]()).join("");
+  return `<button class="back" onclick="go('home')">← Home</button>
+  <div class="label">${m.title}</div>
+  <h2 style="font-size:25px;margin:6px 0 16px">${m.tagline}</h2>
+  ${paras}
+  ${m.grid?gridHTML():""}
+  <button class="btn gold center" style="margin-top:10px" onclick="go('quiz')">Deal the hands (${m.hands.length})</button>`;
+}
+
+function quizHTML(){
+  const m=CHAPTERS[S.modIdx],h=m.hands[S.qIdx];
+  const answered=S.picked!==null,correct=answered&&S.picked===h.correct;
+  return `<div class="topbar">
+    <button class="back" style="margin:0" onclick="go('lesson')">← Lesson</button>
+    <span>Hand ${S.qIdx+1} of ${m.hands.length}</span></div>
+  ${ringHTML(h.hero,h.raiser)}
+  <div class="cards-row">${cardHTML(h.cards[0])}${cardHTML(h.cards[1])}</div>
+  ${h.board?`<div class="board-lbl">BOARD</div><div class="board-strip" style="margin-bottom:10px">${h.board.map(xsCard).join("")}</div>`:""}
+  ${h.opp?`<div class="board-lbl">OPPONENT SHOWS</div><div class="board-strip" style="margin-bottom:10px">${h.opp.map(xsCard).join("")}</div>`:""}
+  <p class="scenario">${esc(h.scenario)}</p>
+  ${optionsHTML(h,S.picked,"answer")}
+  ${helpHTML(h,m.id)}
+  ${answered?feedbackHTML(correct,correct?"CORRECT":"NOT THIS TIME",h.explain,h.rule):""}
+  ${answered?`<button class="btn gold center" onclick="next()">${S.qIdx+1<m.hands.length?"Next hand →":"Finish chapter"}</button>`:""}`;
+}
+
+function doneHTML(){
+  const m=CHAPTERS[S.modIdx],total=m.hands.length,pct=Math.round(S.sessionRight/total*100);
+  const msg=pct===100?"Flawless. Next chapter.":pct>=70?"Solid — reread the lesson, rerun the misses.":"Another pass through the lesson before moving on.";
+  return `<div class="center-wrap">
+    <div class="label">${m.title} complete</div>
+    <div class="big-num">${S.sessionRight}/${total}</div>
+    <p class="fine">${msg}</p>
+    <button class="btn center" onclick="replayQuiz()">Replay hands</button>
+    <button class="btn gold center" onclick="go('home')">Home</button></div>`;
+}
+
+function runHTML(){
+  const h=S.run.hands[S.rIdx];
+  const answered=S.rPicked!==null,correct=answered&&S.rPicked===h.correct;
+  return `<div class="topbar">
+    <button class="back" style="margin:0" onclick="go('home')">✕ End run</button>
+    <span>${S.run.title} · ${S.rIdx+1}/${S.run.hands.length} · Score ${S.rRight}</span></div>
+  ${ringHTML(h.hero,h.raiser)}
+  <div class="cards-row">${cardHTML(h.cards[0])}${cardHTML(h.cards[1])}</div>
+  ${h.board?`<div class="board-lbl">BOARD</div><div class="board-strip" style="margin-bottom:10px">${h.board.map(xsCard).join("")}</div>`:""}
+  ${h.opp?`<div class="board-lbl">OPPONENT SHOWS</div><div class="board-strip" style="margin-bottom:10px">${h.opp.map(xsCard).join("")}</div>`:""}
+  <p class="scenario">${esc(h.scenario)}</p>
+  ${optionsHTML(h,S.rPicked,"runAnswer")}
+  ${helpHTML(h,null)}
+  ${answered?feedbackHTML(correct,correct?"CORRECT":"NOT THIS TIME",h.explain,h.rule):""}
+  ${answered?`<button class="btn gold center" onclick="runNext()">${S.rIdx+1<S.run.hands.length?"Next →":"Finish run"}</button>`:""}`;
+}
+
+function runDoneHTML(){
+  const total=S.run.hands.length,pct=Math.round(S.rRight/total*100);
+  const msg=pct===100?"Perfect. Move up a level.":pct>=75?"Solid. Rerun the misses, then move on.":"Reread the chapters this run tests, then try again.";
+  return `<div class="center-wrap">
+    <div class="label">${S.run.title} complete</div>
+    <div class="big-num">${S.rRight}/${total}</div>
+    <p class="fine">${msg}</p>
+    <button class="btn center" onclick="startRun('${S.run.id}')">Run it again</button>
+    <button class="btn gold center" onclick="go('home')">Home</button></div>`;
+}
+
+function simHTML(){
+  const h=SIM[S.sIdx];
+  const answered=S.sPicked!==null,correct=answered&&S.sPicked===h.correct;
+  const result=answered?(correct?h.win:h.lose):null;
+  let verdict="";
+  if(answered){
+    if(correct)verdict="WELL PLAYED"+(result.d>0?` · +${result.d}bb`:"");
+    else verdict=(result.d<0?`${result.d}bb · `:"")+"NOT THE PLAY";
+  }
+  return `<div class="topbar">
+    <button class="back" style="margin:0" onclick="go('home')">✕ Leave table</button>
+    <span>Hand ${S.sIdx+1}/${SIM.length}</span></div>
+  <div class="simbar"><span class="lvl">${h.level}</span>
+    <span class="stk ${S.stack<=15?"danger":""}">Stack: ${S.stack}bb</span></div>
+  ${ringHTML(h.hero,h.raiser)}
+  <div class="cards-row" style="margin:6px 0 12px">${cardHTML(h.cards[0])}${cardHTML(h.cards[1])}</div>
+  ${h.board?`<div class="board-lbl">BOARD</div><div class="board-strip" style="margin-bottom:10px">${h.board.map(xsCard).join("")}</div>`:""}
+  ${h.opp?`<div class="board-lbl">OPPONENT SHOWS</div><div class="board-strip" style="margin-bottom:10px">${h.opp.map(xsCard).join("")}</div>`:""}
+  <p class="scenario">${esc(h.scenario)}</p>
+  ${optionsHTML(h,S.sPicked,"simAnswer")}
+  ${helpHTML(h,null)}
+  ${answered?feedbackHTML(correct,verdict,result.note,h.rule):""}
+  ${answered?`<button class="btn gold center" onclick="simNext()">${S.sIdx+1<SIM.length?"Next hand →":"See the result"}</button>`:""}`;
+}
+
+function simDoneHTML(){
+  const perfect=S.sRight===SIM.length;
+  const trophy=S.sRight>=11?"🏆":S.sRight>=8?"🥈":"🪑";
+  const title=S.sRight>=11?((S.name?esc(S.name)+" — ":"")+"Office Champion"):S.sRight>=8?"Final table finish":"Busted mid-field";
+  const msg=perfect?"Flawless run. Bring this exact game on the night."
+    :S.sRight>=11?"A couple of leaks, but champion play. Note which rules you missed."
+    :S.sRight>=8?"The misses cost you the trophy — each one showed its rule. Rerun it."
+    :"The good news: every mistake came with the rule that fixes it. Reread chapter 3 and run it back.";
+  return `<div class="center-wrap" style="margin-top:44px">
+    <div class="label">Tournament over</div>
+    <div style="font-size:56px;margin:14px 0 0">${trophy}</div>
+    <h2 style="font-size:28px;margin:8px 0 2px">${title}</h2>
+    <div style="font-size:15px;margin-bottom:4px">Final stack: ${S.stack}bb · ${S.sRight}/${SIM.length} correct decisions</div>
+    <p class="fine">${msg}</p>
+    <button class="btn center" onclick="startSim()">Play the night again</button>
+    <button class="btn gold center" onclick="go('home')">Home</button></div>`;
+}
+
+/* ============ actions ============ */
+function go(s){S.screen=s;render();}
+function setGrid(p){S.gridPos=p;render();}
+function setGridPhase(p){S.gridPhase=p;render();}
+function openModule(i){S.modIdx=i;S.qIdx=0;S.picked=null;S.sessionRight=0;S.help=false;S.screen="lesson";render();}
+function replayQuiz(){S.qIdx=0;S.picked=null;S.sessionRight=0;S.help=false;S.screen="quiz";render();}
+function answer(i){
+  if(S.picked!==null)return;
+  S.picked=i;
+  if(i===CHAPTERS[S.modIdx].hands[S.qIdx].correct)S.sessionRight++;
+  render();
+}
+function next(){
+  const m=CHAPTERS[S.modIdx];
+  if(S.qIdx+1<m.hands.length){S.qIdx++;S.picked=null;S.help=false;}
+  else{S.scores[m.id]={right:S.sessionRight,total:m.hands.length};saveScores(S.scores);S.screen="done";}
+  render();
+}
+function startRun(id){
+  S.run=id==="runA"?RUN_A:RUN_B;
+  S.rIdx=0;S.rPicked=null;S.rRight=0;S.help=false;S.screen="run";render();
+}
+function runAnswer(i){
+  if(S.rPicked!==null)return;
+  S.rPicked=i;
+  if(i===S.run.hands[S.rIdx].correct)S.rRight++;
+  render();
+}
+function runNext(){
+  if(S.rIdx+1<S.run.hands.length){S.rIdx++;S.rPicked=null;S.help=false;}
+  else{S.scores[S.run.id]={right:S.rRight,total:S.run.hands.length};saveScores(S.scores);S.screen="runDone";}
+  render();
+}
+function startSim(){S.sIdx=0;S.sPicked=null;S.stack=300;S.sRight=0;S.help=false;S.screen="sim";render();}
+function simAnswer(i){
+  if(S.sPicked!==null)return;
+  const h=SIM[S.sIdx];
+  S.sPicked=i;
+  const correct=i===h.correct;
+  if(correct)S.sRight++;
+  S.stack=Math.max(1,Math.round((S.stack+(correct?h.win.d:h.lose.d))*10)/10);
+  render();
+}
+function simNext(){
+  if(S.sIdx+1<SIM.length){
+    const nh=SIM[S.sIdx+1];
+    if(nh.setStack)S.stack=nh.setStack;
+    S.sIdx++;S.sPicked=null;S.help=false;
+  }else S.screen="simDone";
+  render();
+}
+
+(function boot(){
+  const pr=loadProfile();
+  S.name=pr.name||"";
+  if(!pr.skipped)S.screen="intro";
+  render();
+})();
+</script>
+</body>
+</html>
