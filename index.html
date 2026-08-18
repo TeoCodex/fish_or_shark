@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Five V Poker Trainer Coach</title>
+<script data-goatcounter="https://teocodex.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <style>
   :root{
     --felt:#0C3B2E; --felt-mid:#11503E; --cream:#F6F1E3; --brass:#C9A227;
@@ -178,6 +179,9 @@
 /* ============ persistence (safe in sandboxed previews) ============ */
 function loadScores(){ try{ return JSON.parse(localStorage.getItem("preflopScores")||"{}"); }catch(e){ return {}; } }
 function saveScores(s){ try{ localStorage.setItem("preflopScores", JSON.stringify(s)); }catch(e){} }
+function track(ev){
+  try{ if(window.goatcounter&&window.goatcounter.count){ window.goatcounter.count({path:ev,title:ev,event:true}); } }catch(e){}
+}
 function loadProfile(){ try{ return JSON.parse(localStorage.getItem("pfProfile")||"{}"); }catch(e){ return {}; } }
 function saveProfile(p){ try{ localStorage.setItem("pfProfile", JSON.stringify(p)); }catch(e){} }
 
@@ -684,7 +688,7 @@ function submitName(){
   startAssess();
 }
 function skipIntro(){saveProfile({name:S.name,skipped:true});go("home");}
-function startAssess(){S.aIdx=0;S.aPick=null;S.sharks=0;S.screen="assess";render();}
+function startAssess(){track("assessment-started");S.aIdx=0;S.aPick=null;S.sharks=0;S.screen="assess";render();}
 function assessPick(i){
   if(S.aPick!==null)return;
   S.aPick=i;
@@ -694,7 +698,7 @@ function assessPick(i){
 function assessNext(){
   if(S.aIdx+1<ASSESS.length){S.aIdx++;S.aPick=null;render();}
   else{
-    const pr=loadProfile();pr.name=S.name;pr.skipped=true;pr.sharks=S.sharks;pr.verdict=S.sharks>=7?"🦈":"🐟";saveProfile(pr);
+    const pr=loadProfile();pr.name=S.name;pr.skipped=true;pr.sharks=S.sharks;pr.verdict=S.sharks>=7?"🦈":"🐟";saveProfile(pr);track("assessment-completed");track(S.sharks>=7?"verdict-shark":"verdict-fish");
     S.screen="assessDone";render();
   }
 }
@@ -863,7 +867,7 @@ function simDoneHTML(){
 function go(s){S.screen=s;render();}
 function setGrid(p){S.gridPos=p;render();}
 function setGridPhase(p){S.gridPhase=p;render();}
-function openModule(i){S.modIdx=i;S.qIdx=0;S.picked=null;S.sessionRight=0;S.help=false;S.screen="lesson";render();}
+function openModule(i){track("chapter-"+(i+1)+"-opened");S.modIdx=i;S.qIdx=0;S.picked=null;S.sessionRight=0;S.help=false;S.screen="lesson";render();}
 function replayQuiz(){S.qIdx=0;S.picked=null;S.sessionRight=0;S.help=false;S.screen="quiz";render();}
 function answer(i){
   if(S.picked!==null)return;
@@ -892,7 +896,7 @@ function runNext(){
   else{S.scores[S.run.id]={right:S.rRight,total:S.run.hands.length};saveScores(S.scores);S.screen="runDone";}
   render();
 }
-function startSim(){S.sIdx=0;S.sPicked=null;S.stack=300;S.sRight=0;S.help=false;S.screen="sim";render();}
+function startSim(){track("sim-started");S.sIdx=0;S.sPicked=null;S.stack=300;S.sRight=0;S.help=false;S.screen="sim";render();}
 function simAnswer(i){
   if(S.sPicked!==null)return;
   const h=SIM[S.sIdx];
@@ -907,7 +911,7 @@ function simNext(){
     const nh=SIM[S.sIdx+1];
     if(nh.setStack)S.stack=nh.setStack;
     S.sIdx++;S.sPicked=null;S.help=false;
-  }else S.screen="simDone";
+  }else{track("sim-finished");track(S.sRight>=11?"sim-champion":"sim-nonchampion");S.screen="simDone";}
   render();
 }
 
